@@ -7,7 +7,8 @@ Execute these actions in order:
    intentional; record the decision before any rename.
 3. Create and configure the chosen GitHub remote for `kcms-planning` without
    publishing secrets.
-4. Create and approve the initial KCMS V2 OpenDesign `DESIGN.md`.
+4. Complete the `TBD` sections in the KCMS V2 `DESIGN.md` and approve it with the
+   team.
 5. Complete and accept the backend runtime ADR.
 6. Complete and accept the frontend runtime ADR.
 7. Write the executable Part 0 repository-scaffolding sub-plan with exact files,

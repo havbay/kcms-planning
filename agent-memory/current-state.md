@@ -27,6 +27,8 @@ started.
 - `source-confirmed`: frontend and backend use independent Git repositories.
 - `source-confirmed`: backend local directory and remote currently include a
   trailing hyphen.
+- `source-confirmed`: `DESIGN.md` contains the required ten-section KCMS design
+  outline; its unspecified design decisions remain `TBD` and it is not approved.
 - `runtime-confirmed`: Codex CLI is `0.151.0`.
 - `runtime-confirmed`: OpenDesign uses isolated Node `24.18.0` and pnpm
   `10.33.2`; the workstation default Node installation was not changed.

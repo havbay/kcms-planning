@@ -22,10 +22,11 @@ scaffolding backend code.
 
 1. `00-product-specification.md`
 2. `04-implementation-roadmap.md`
-3. `agent-memory/current-state.md`
-4. The relevant frontend or backend plan
-5. `03-api-contract.md`
-6. Applicable records under `adr/`
+3. `DESIGN.md` for design and frontend work
+4. `agent-memory/current-state.md`
+5. The relevant frontend or backend plan
+6. `03-api-contract.md`
+7. Applicable records under `adr/`
 
 ## Working Rule
 
