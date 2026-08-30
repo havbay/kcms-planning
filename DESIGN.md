@@ -58,7 +58,10 @@ invent them in production code.
 - Human actions must be reversible.
 - Hiding a comment is separate from correcting its label.
 - Severity and target remain independent.
-- Automatic hiding is not presented as active before validation.
+- Every Facebook moderation Action in the prototype and initial shadow mode is
+  explicitly made by a human.
+- Automatic hiding is absent from the prototype and remains disabled throughout
+  initial shadow-mode validation.
 
 ## 8. Localization
 

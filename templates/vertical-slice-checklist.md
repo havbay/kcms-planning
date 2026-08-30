@@ -20,11 +20,13 @@ begin implementation until every required path and contract is named.
 
 - [ ] Product requirements mapped to acceptance tests.
 - [ ] Desktop, mobile, English, Khmer, and API-state designs approved.
+- [ ] Backend-owned OpenAPI change accepted and frontend client regenerated.
+- [ ] Frontend behavior test fails for the intended missing behavior.
+- [ ] Frontend implementation passes component tests through approved
+  network-boundary simulation.
 - [ ] Backend contract test fails for the intended missing behavior.
 - [ ] Backend implementation passes allowed and denied tests.
-- [ ] OpenAPI diff reviewed and frontend client regenerated.
-- [ ] Frontend behavior test fails for the intended missing behavior.
-- [ ] Frontend implementation passes component tests.
+- [ ] Backend OpenAPI export reviewed and frontend client regeneration is clean.
 - [ ] Playwright completes the real cross-repository journey.
 - [ ] Accessibility, console, overflow, and responsive checks pass.
 - [ ] Memory and decision records updated with evidence.

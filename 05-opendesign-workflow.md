@@ -131,10 +131,15 @@ are excluded.
 
 ### 6. Implement Against Real Contracts
 
-Codex implements the approved experience in `kcms-frontend`. Production screens
-use the generated API client and real backend responses. OpenDesign-generated
-backend behavior, authentication assumptions, and sample analytics are ignored
-unless they already exist in the accepted product and API specifications.
+Codex implements the approved experience in `kcms-frontend` against the generated
+API client and accepted backend-owned OpenAPI artifact. Before matching backend
+behavior exists, tests and an explicitly enabled local development preview may
+simulate the accepted contract only at the network boundary. Production entry
+points and feature modules never import fixtures, preview handlers, fake customer
+data, or OpenDesign-generated backend behavior. Authentication assumptions and
+sample analytics are ignored unless they already exist in the accepted product
+and API specifications. The simulation must be replaced by real backend responses
+before the slice can complete.
 
 ### 7. Verify The Match
 
