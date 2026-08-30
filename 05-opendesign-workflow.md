@@ -150,10 +150,13 @@ Design KCMS V2, a bilingual English and Khmer operational platform for moderatin
 Khmer and Khmerlish Facebook comments. The product helps customer staff find
 targeted abuse and scams while preserving legitimate criticism of institutions.
 
-The users are Operators, Administrators, Moderators, and blind Annotators. Use a
+The authenticated users are Clients and Platform Administrators. Clients moderate
+their Page comments and manage their workspace. Platform Administrators onboard
+and support clients without ordinary access to customer comment content. Use a
 calm, credible trust-and-safety design system optimized for repeated operational
-work. Keep Severity and Target visibly independent. Make human actions reversible
-and do not imply that hiding a comment is a label correction.
+work. Keep Severity and Target visibly independent. Make human actions reversible,
+do not imply that hiding is a label correction, and disclose the active pattern
+matcher without presenting it as trained AI.
 
 Create only the active vertical slice. Include desktop, tablet, mobile, English,
 Khmer, loading, empty, denied, error, retry, and success states required by its

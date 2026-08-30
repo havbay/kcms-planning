@@ -21,13 +21,16 @@ authorization, policy decisions, classification, or persistence.
 ## Information Architecture
 
 - Public: landing, request access, sign in, invitation setup, and recovery.
-- Moderator: Triage, Review, Audit, history, Actions, and Corrections.
-- Administrator: moderator capabilities plus Overview, Team, Policy, and Metrics.
-- Annotator: Label Workspace, skips, progress, and Disagreements.
-- Operator: access requests, workspace onboarding, fleet health, and support audit.
+- Client: Summary, Triage, Review, Audit, history, Actions, Corrections, Page
+  connection, Team, Policy, and honest operational Metrics.
+- Platform Administrator: access requests, client workspace onboarding, client
+  user support, fleet health, integration health, and audited support actions.
 
-Navigation is capability-based. A role label alone does not decide the landing
-screen when a user has moderation capability.
+The initial authenticated product exposes only Client and Platform Administrator.
+Navigation remains capability-based so later restrictions do not require an
+authorization redesign. There is no client Annotation workspace in the initial
+MVP, and Platform Administrator views do not expose ordinary customer comment
+content.
 
 ## Proposed Frontend Boundaries
 
@@ -69,3 +72,7 @@ Every API-backed region implements:
 - English and Khmer layouts pass at 375, 768, 1024, and 1440 CSS pixels.
 - Representative screens remain usable at 200 percent browser zoom.
 - Production build completes within the agreed bundle budget recorded in Part 0.
+
+The prototype UI names and discloses the active pattern-matcher rule-set version.
+It never presents a Facebook Action as automated: leave, hide, and unhide controls
+always require an authenticated Client decision.

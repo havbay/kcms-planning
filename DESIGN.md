@@ -49,10 +49,9 @@ invent them in production code.
 
 - Landing page and request access: `TBD`
 - Authentication and invitations: `TBD`
-- Moderator work list and comment review: `TBD`
-- Annotation workspace: `TBD`
-- Customer administration: `TBD`
-- Operator workspace: `TBD`
+- Client work list and human comment review: `TBD`
+- Client summary, Page connection, Team, and Policy: `TBD`
+- Platform Administrator onboarding, health, and audited support: `TBD`
 
 ## 7. Interaction Rules
 
