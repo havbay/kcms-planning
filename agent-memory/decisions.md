@@ -20,10 +20,11 @@ handoff state live in the sibling `kcms-planning` repository.
 Work proceeds through Parts 0-8, one active part at a time. A frontend-only screen
 or backend-only endpoint is not a completed part.
 
-## D-005: OpenDesign Before Frontend Implementation
+## D-005: Design Handoff Before Frontend Implementation
 
-Every frontend slice receives an approved OpenDesign handoff before production UI
-implementation begins. OpenDesign output does not define backend behavior.
+Every frontend slice receives an approved design handoff before production UI
+implementation begins. D-017 permits a direct Codex UX/web-design handoff;
+OpenDesign output, when used, does not define backend behavior.
 
 ## D-006: Real Production Data Boundaries
 
@@ -93,9 +94,18 @@ Library, Playwright, and a generated OpenAPI client. See ADRs 0002 and 0003.
 
 ## D-016: Frontend-First Contract Delivery
 
-Each product slice begins with an accepted OpenDesign handoff and an accepted
+Each product slice begins with an accepted design handoff and an accepted
 backend-owned OpenAPI artifact. The frontend behavior is implemented first. API
 responses may be simulated only by network interception in tests and an explicitly
 enabled local preview; production entry points and feature modules never import
 fixtures or fake customer data. The matching backend follows, and live frontend,
 API, and persistence proof is still required before the slice completes.
+
+## D-017: Direct Codex Design Handoff
+
+The product owner explicitly selected direct Codex design after approving the UX
+flow, landing structure, palette, copy direction, and reference strategy. An
+approved direct-Codex UX/web-design brief may satisfy the pre-code design gate;
+OpenDesign generation is optional rather than mandatory. The first accepted
+direct handoff is the bilingual landing-page header and hero in
+`kcms-frontend/docs/design/part-0-landing-header-hero/`.

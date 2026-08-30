@@ -3,9 +3,11 @@
 **Contract revision:** Part 0 health semantics are source-confirmed in
 `03-api-contract.md`; no generated OpenAPI artifact exists yet.
 
-**Generated frontend client:** None.
+**Generated frontend client:** None. The landing header/hero has no API-backed
+region and contains no production fixtures.
 
-**Local frontend URL:** None.
+**Local frontend URL:** Runtime-confirmed at `http://127.0.0.1:5173` for the
+landing header/hero verification; this is a development server, not a deployment.
 
 **Local backend URL:** None.
 
@@ -13,12 +15,11 @@
 
 **Live cross-repository checks:** None.
 
-**OpenDesign integration:** Runtime-confirmed. OpenDesign `0.21.1` is running at
-`http://127.0.0.1:5180`, its daemon is healthy at `http://127.0.0.1:7456`, and the
-registered Codex MCP completed a 22-tool handshake. OpenDesign Cloud is not
-configured or verified.
+**Design integration:** The product owner selected direct Codex design under
+D-017 after the landing UX and visual direction were approved. OpenDesign remains
+installed and optional; its current Codex-task transport closed during one
+handoff attempt, so no OpenDesign artifact is claimed for this slice.
 
-**Next integration action:** Approve the Part 0 OpenDesign handoff, implement the
-frontend Client shell and health workflow first through contract-faithful network
-simulation, then implement live database-aware backend health and replace the
-simulation in the one cross-repository smoke command.
+**Next integration action:** Review the landing header/hero, then continue the
+public journey one approved section at a time. Backend health and the generated
+OpenAPI client remain required before Part 0 can complete.

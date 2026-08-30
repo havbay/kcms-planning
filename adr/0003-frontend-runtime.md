@@ -13,7 +13,7 @@ prototype is implemented before matching backend behavior, then connected to the
 live API before a roadmap part can complete.
 
 Frontend-first must not create a second contract or let fabricated data enter
-production. OpenDesign handoff precedes production screens, OpenAPI defines the
+production. An approved design handoff precedes production screens, OpenAPI defines the
 network boundary, and simulation is isolated to tests and an explicitly enabled
 local preview.
 

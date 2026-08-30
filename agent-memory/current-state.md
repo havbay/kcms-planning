@@ -1,18 +1,18 @@
 # Current State
 
-**Updated:** 2026-08-30
+**Updated:** 2026-08-31
 
 **Active part:** Part 0 - Foundation
 
-**Part status:** Planning foundation in progress; application scaffolding has not
-started.
+**Part status:** Frontend foundation in progress. The first public header/hero
+slice is implemented and verified; backend and live integration have not started.
 
 ## Repository State
 
 - `kcms-planning`: planning-only worktree on `feature/v2-foundation`; no remote is
   configured.
-- `kcms-frontend`: no application scaffold; agent workflow committed on `main` at
-  `627e80c`; the foundation worktree is on `feature/v2-foundation`.
+- `kcms-frontend`: React/Vite scaffold and bilingual landing header/hero are on
+  `feature/landing-header-hero` in the canonical V2 folder; not pushed or merged.
 - `kcms-backend`: no application scaffold; agent workflow committed on `main` at
   `85dbfdf`; the foundation worktree is on `feature/v2-foundation` and its local
   `origin` targets the canonical name.
@@ -48,14 +48,18 @@ started.
   seed-dataset, offline evaluation, approval, and versioned deployment process.
 - `source-confirmed`: accepted ADRs choose FastAPI/Python 3.12+/uv/PostgreSQL for
   the backend and React 19/TypeScript strict/Vite/Node 22+/npm for the frontend.
-- `source-confirmed`: execution is frontend-first after an approved OpenDesign
+- `source-confirmed`: execution is frontend-first after an approved design
   handoff and accepted OpenAPI artifact; simulation is restricted to the network
   boundary and never satisfies the live completion gate.
+- `source-confirmed`: D-017 accepts direct Codex UX/web-design handoffs and makes
+  OpenDesign generation optional after explicit product-owner approval.
+- `runtime-confirmed`: Vitest 5/5, Playwright 3/3, strict TypeScript, ESLint, Vite
+  build, and desktop/mobile rendered checks pass for the landing header/hero.
 
 ## Remaining Preconditions And External Work
 
-- Complete and accept the Part 0 OpenDesign handoff before any production Client
-  screen implementation.
+- Review the implemented landing header/hero before expanding to the next public
+  landing section.
 - Choose and configure a remote for `kcms-planning` separately.
 - Application implementation and runtime proof have not started.
 

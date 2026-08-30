@@ -27,7 +27,8 @@ asyncpg/PostgreSQL; deterministic OpenAPI 3.1.
 - Expose only Client and Platform Administrator as authenticated MVP roles.
 - Keep kcms-frontend and kcms-backend as independent Git repositories.
 - Begin frontend implementation only after the active screen states have an
-  accepted OpenDesign handoff.
+  accepted design handoff. Direct Codex UX/web-design handoffs are accepted under
+  D-017; OpenDesign generation remains optional.
 - Define frontend API behavior from the accepted OpenAPI contract.
 - Simulate API behavior only through network interception in tests and an
   explicitly enabled local preview; production modules never import fixtures.
@@ -53,7 +54,9 @@ simulation in one sibling-repository smoke check.
 - [ ] Accept the product, role, provider, human-action, repository-name, and
   frontend-first decisions in planning memory.
 - [ ] Accept the backend and frontend runtime ADRs.
-- [ ] Approve the OpenDesign handoff for the Client shell, pattern-matcher
+- [x] Approve and implement the bilingual public landing header and hero as the
+  V2 visual foundation before expanding the public journey.
+- [ ] Approve the design handoff for the Client shell, pattern-matcher
   disclosure, connection health, work summary, loading, unavailable, and retry
   states before creating production screens.
 - [ ] Scaffold kcms-frontend with React 19, TypeScript strict, Vite, npm, Vitest,
