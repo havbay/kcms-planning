@@ -25,6 +25,30 @@ request or response interfaces.
 - Authenticated users without a capability receive `403`.
 - Resource identifiers outside the user's workspace do not disclose private data.
 
+## Part 0 Health Boundary
+
+`GET /api/v1/health` is public and database-aware. Its `operationId` is
+`getHealth`. A ready response returns `200`:
+
+```json
+{
+  "service": "kcms-backend",
+  "status": "READY",
+  "database": "REACHABLE",
+  "contract_version": "1.0.0"
+}
+```
+
+When PostgreSQL cannot answer the probe, the endpoint returns the same schema with
+`503`, `status` equal to `DEGRADED`, and `database` equal to `UNREACHABLE`. It does
+not return exception or connection details.
+
+The accepted artifact first enables frontend-first development. The frontend may
+simulate this operation only at the network boundary in tests or an explicitly
+enabled local preview. The later backend implementation exports the deterministic
+artifact, the frontend vendors that accepted revision and regenerates its client,
+and Part 0 completes only after the live endpoint replaces simulation.
+
 ## Error Envelope
 
 ```json
@@ -70,10 +94,14 @@ identifier tie-breaker.
 
 ## Contract Change Process
 
-1. Update the backend contract test first.
-2. Generate and review the OpenAPI diff.
-3. Regenerate the frontend client.
-4. Add allowed and denied backend behavior tests.
-5. Add frontend success and failure-state tests.
-6. Run the live cross-repository Playwright journey.
-7. Record the verified contract revision in `agent-memory/integration-state.md`.
+1. Define and accept the intended backend-owned OpenAPI change.
+2. Vendor the accepted artifact and regenerate the frontend client.
+3. Add frontend success and failure-state tests at the network boundary.
+4. Implement and test the frontend workflow against that contract.
+5. Update the backend contract test, implement the behavior, and export the
+   deterministic artifact.
+6. Review the OpenAPI diff and regenerate the frontend client if the export
+   changed without changing the accepted semantics.
+7. Add allowed and denied backend behavior tests where authentication applies.
+8. Run the live cross-repository Playwright journey.
+9. Record the verified contract revision in `agent-memory/integration-state.md`.

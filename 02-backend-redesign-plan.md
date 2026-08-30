@@ -6,10 +6,10 @@ The backend owns domain invariants, authentication, authorization, persistence,
 integration credentials, ingestion, classification orchestration, routing,
 moderation records, annotation records, metrics, and auditability.
 
-## Part 0 Technology Decision
+## Accepted Part 0 Technology Decision
 
-The team will compare at least FastAPI and NestJS before scaffolding. The decision
-must be recorded in `adr/0002-backend-runtime.md` using these criteria:
+`adr/0002-backend-runtime.md` accepts a FastAPI modular monolith on Python 3.12 or
+newer, managed with uv. The decision used these criteria:
 
 - Team implementation and debugging experience.
 - Type safety across HTTP and persistence boundaries.
@@ -20,9 +20,7 @@ must be recorded in `adr/0002-backend-runtime.md` using these criteria:
 - Deployment complexity and operating cost.
 - Ability to preserve the domain invariants in the product specification.
 
-FastAPI is the default recommendation because the classifier and evaluation work
-are Python-oriented. The team may choose NestJS only when the ADR demonstrates a
-clear operational or staffing advantage.
+NestJS remains a documented alternative, not an open Part 0 decision.
 
 ## Architecture
 
@@ -39,7 +37,7 @@ src/kcms/
 ├── integrations/    # Facebook and scripted source adapters
 ├── classification/  # classifier port and Verdict persistence
 ├── moderation/      # routing, Work List, Actions, Corrections, history
-├── annotation/      # assignments, labels, skips, disagreements, export
+├── model_development/ # later internal labels, datasets, evaluation
 ├── policy/          # versioned Page Policy
 ├── metrics/         # evaluation and operational measures
 ├── operations/      # fleet health and audited support tools
@@ -65,9 +63,15 @@ src/kcms/
 - The comment-source port supports scripted local fixtures and Facebook without
   changing moderation code.
 - Classifier adapters return the same versioned two-axis Verdict contract.
-- Automatic actions require an accepted versioned Page Policy.
+- Every initial-MVP Facebook Action requires an authenticated human request;
+  automatic provider actions are not implemented in the prototype.
 - Events that trigger email or background work use a transactional outbox.
 - Metrics never represent an absent denominator as zero.
+
+Internal manual dataset creation and trained-model work occur only after the
+functional prototype path is usable. They remain separate from the client UI and
+must not block the initial MVP. Automatic replies, Messenger automation, and
+additional providers are outside the initial backend scope.
 
 ## Quality Gates
 
