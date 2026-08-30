@@ -9,14 +9,13 @@ started.
 
 ## Repository State
 
-- `kcms-planning`: local Git repository on `main`; planning foundation committed
-  at `f75c166`; no remote configured.
+- `kcms-planning`: planning-only worktree on `feature/v2-foundation`; no remote is
+  configured.
 - `kcms-frontend`: no application scaffold; agent workflow committed on `main` at
-  `627e80c`; remote `git@github.com:havbay/kcms-frontend.git` configured, remote
-  main not present.
-- `kcms-backend-`: no application scaffold; agent workflow committed on `main` at
-  `85dbfdf`; remote `git@github.com:havbay/kcms-backend-.git` configured, remote
-  main not present.
+  `627e80c`; the foundation worktree is on `feature/v2-foundation`.
+- `kcms-backend`: no application scaffold; agent workflow committed on `main` at
+  `85dbfdf`; the foundation worktree is on `feature/v2-foundation` and its local
+  `origin` targets the canonical name.
 - KCMS v1: unchanged on `feature/kcms-full-redesign-bilingual`; it is reference
   evidence and not the V2 implementation base.
 
@@ -25,8 +24,11 @@ started.
 - `source-confirmed`: both V2 code repositories contain only their root agent
   workflow and Git metadata; no runtime code exists.
 - `source-confirmed`: frontend and backend use independent Git repositories.
-- `source-confirmed`: backend local directory and remote currently include a
-  trailing hyphen.
+- `source-confirmed`: `kcms-backend` is the accepted repository name and the local
+  foundation-worktree remote targets it.
+- `source-confirmed`: read-only GitHub verification confirmed
+  `havbay/kcms-backend` as canonical and the legacy URL redirects to it; no push
+  was performed.
 - `source-confirmed`: `DESIGN.md` contains the required ten-section KCMS design
   outline; its unspecified design decisions remain `TBD` and it is not approved.
 - `runtime-confirmed`: Codex CLI is `0.151.0`.
@@ -38,17 +40,29 @@ started.
   and enabled, and its registered MCP completed a 22-tool handshake.
 - `runtime-confirmed`: OpenDesign's live Claude Code catalog includes Claude 5
   aliases and explicit Opus 5, Sonnet 5, and Fable 5 options.
+- `source-confirmed`: the accepted prototype direction uses two visible
+  authenticated roles: Client and Platform Administrator.
+- `source-confirmed`: the immediate goal is a real full-stack prototype using a
+  disclosed, versioned pattern-matching classifier with human moderation Actions.
+- `source-confirmed`: a trained Khmer model follows a separately governed manual
+  seed-dataset, offline evaluation, approval, and versioned deployment process.
+- `source-confirmed`: accepted ADRs choose FastAPI/Python 3.12+/uv/PostgreSQL for
+  the backend and React 19/TypeScript strict/Vite/Node 22+/npm for the frontend.
+- `source-confirmed`: execution is frontend-first after an approved OpenDesign
+  handoff and accepted OpenAPI artifact; simulation is restricted to the network
+  boundary and never satisfies the live completion gate.
 
-## Blockers And Decisions Needed
+## Remaining Preconditions And External Work
 
-- Confirm whether `kcms-backend-` and `kcms-backend-` on GitHub are intentional;
-  do not rename or change the remote without owner approval.
-- Establish `kcms-planning` as a Git repository and choose its remote.
-- Accept the product specification and choose backend/frontend runtimes through ADRs.
+- Complete and accept the Part 0 OpenDesign handoff before any production Client
+  screen implementation.
+- Choose and configure a remote for `kcms-planning` separately.
+- Application implementation and runtime proof have not started.
 
 ## Last Verified Outcome
 
-The planning source of truth, vertical-slice roadmap, OpenDesign workflow, and
-agent-memory structure are locally version-controlled. The OpenDesign source,
-plugin, MCP, daemon, and web UI are runtime-verified. Both code repositories contain
-the canonical-memory pointer. No V2 application behavior is claimed.
+The accepted product direction, frontend-first roadmap, repository name, runtime
+ADRs, and API health semantics are planning-source evidence. The exact Part 0
+implementation plan remains the next planning deliverable.
+Earlier OpenDesign tool integration remains runtime-confirmed. No React, FastAPI,
+PostgreSQL, generated-client, or live cross-repository behavior is claimed.

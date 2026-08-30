@@ -1,6 +1,7 @@
 # Integration State
 
-**Contract revision:** None.
+**Contract revision:** Part 0 health semantics are source-confirmed in
+`03-api-contract.md`; no generated OpenAPI artifact exists yet.
 
 **Generated frontend client:** None.
 
@@ -8,7 +9,7 @@
 
 **Local backend URL:** None.
 
-**Database:** None configured for V2.
+**Database:** PostgreSQL is accepted for V2; no service is configured or verified.
 
 **Live cross-repository checks:** None.
 
@@ -17,6 +18,7 @@
 registered Codex MCP completed a 22-tool handshake. OpenDesign Cloud is not
 configured or verified.
 
-**Next integration action:** Part 0 must establish backend health, frontend
-environment validation, OpenAPI generation, local proxy/CORS behavior, PostgreSQL,
-and one cross-repository smoke command.
+**Next integration action:** Approve the Part 0 OpenDesign handoff, implement the
+frontend Client shell and health workflow first through contract-faithful network
+simulation, then implement live database-aware backend health and replace the
+simulation in the one cross-repository smoke command.

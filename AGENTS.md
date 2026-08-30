@@ -1,7 +1,7 @@
 # KCMS V2 Agent Instructions
 
 These instructions apply to every file in this planning repository and to work
-coordinated across the sibling `kcms-frontend` and `kcms-backend-` repositories.
+coordinated across the sibling `kcms-frontend` and `kcms-backend` repositories.
 
 ## Start Of Every Task
 

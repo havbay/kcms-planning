@@ -10,13 +10,13 @@ status from drifting apart.
 ```text
 KCMS-V2/
 ├── kcms-planning/   # this repository
-├── kcms-frontend/   # customer and operator web application
-└── kcms-backend-/   # API, workers, integrations, and persistence
+├── kcms-frontend/   # Client and Platform Administrator web application
+└── kcms-backend/    # API, workers, integrations, and persistence
 ```
 
-The trailing hyphen in `kcms-backend-` and its remote is an observed starting
-condition, not an approved naming decision. Resolve it during Part 0 before
-scaffolding backend code.
+`kcms-backend` is the accepted local and application repository name. Read-only
+GitHub verification confirmed `havbay/kcms-backend` as canonical and the legacy
+URL redirects to it. No push or network-side mutation was performed here.
 
 ## Reading Order
 
