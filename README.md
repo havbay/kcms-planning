@@ -14,9 +14,15 @@ KCMS-V2/
 └── kcms-backend/    # API, workers, integrations, and persistence
 ```
 
-`kcms-backend` is the accepted local and application repository name. Read-only
-GitHub verification confirmed `havbay/kcms-backend` as canonical and the legacy
-URL redirects to it. No push or network-side mutation was performed here.
+## Repositories And Live Environments
+
+| Repository | Live | Hosting |
+|---|---|---|
+| [`kcms-frontend`](https://github.com/havbay/kcms-frontend) | https://kcms-frontend.vercel.app | Vercel |
+| [`kcms-backend`](https://github.com/havbay/kcms-backend) | https://kcms-backend.onrender.com | Render, Singapore |
+| [`kcms-planning`](https://github.com/havbay/kcms-planning) | — | — |
+
+Both applications auto-deploy on push to `main`.
 
 ## Reading Order
 
