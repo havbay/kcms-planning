@@ -28,20 +28,25 @@ started.
 - `source-confirmed`: backend local directory and remote currently include a
   trailing hyphen.
 - `runtime-confirmed`: Codex CLI is `0.151.0`.
-- `runtime-confirmed`: Node is `22.22.3` and pnpm is `9.15.9`.
-- `runtime-confirmed`: no `open-design` MCP registration exists.
-- `runtime-confirmed`: the official OpenDesign Codex plugin is not installed.
+- `runtime-confirmed`: OpenDesign uses isolated Node `24.18.0` and pnpm
+  `10.33.2`; the workstation default Node installation was not changed.
+- `runtime-confirmed`: OpenDesign `0.21.1` runs from upstream `main` commit
+  `df84ae5` with web on `127.0.0.1:5180` and daemon on `127.0.0.1:7456`.
+- `runtime-confirmed`: the official OpenDesign Codex plugin `0.5.3` is installed
+  and enabled, and its registered MCP completed a 22-tool handshake.
+- `runtime-confirmed`: OpenDesign's live Claude Code catalog includes Claude 5
+  aliases and explicit Opus 5, Sonnet 5, and Fable 5 options.
 
 ## Blockers And Decisions Needed
 
 - Confirm whether `kcms-backend-` and `kcms-backend-` on GitHub are intentional;
   do not rename or change the remote without owner approval.
 - Establish `kcms-planning` as a Git repository and choose its remote.
-- Complete the OpenDesign source/toolchain installation from Part 0.
 - Accept the product specification and choose backend/frontend runtimes through ADRs.
 
 ## Last Verified Outcome
 
 The planning source of truth, vertical-slice roadmap, OpenDesign workflow, and
-agent-memory structure are locally version-controlled. Both code repositories
-contain the canonical-memory pointer. No V2 application behavior is claimed.
+agent-memory structure are locally version-controlled. The OpenDesign source,
+plugin, MCP, daemon, and web UI are runtime-verified. Both code repositories contain
+the canonical-memory pointer. No V2 application behavior is claimed.

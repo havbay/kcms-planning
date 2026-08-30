@@ -38,20 +38,26 @@ its local MCP must be registered with Codex. On this Ubuntu workstation, use the
 official source installation because the signed desktop downloads target macOS and
 Windows.
 
-The current verified pre-install state is:
+The current verified local state is:
 
-- Codex CLI: `0.151.0`, compatible with the plugin minimum.
-- Node.js: `22.22.3`, below OpenDesign's required Node 24.
-- pnpm: `9.15.9`, below the required `10.33.2`.
-- OpenDesign Codex plugin: not installed.
-- OpenDesign MCP: not registered.
+- Codex CLI: `0.151.0`.
+- OpenDesign source: `/home/ggwp/tools/open-design` on upstream `main` commit
+  `df84ae5`; application version `0.21.1`.
+- Isolated OpenDesign toolchain: Node.js `24.18.0` through nvm and pnpm `10.33.2`
+  through Corepack. The workstation's default Node version was not changed.
+- Official Codex plugin: `open-design@open-design` version `0.5.3`, installed and
+  enabled.
+- OpenDesign MCP: registered as `open-design` with absolute Node and OpenDesign
+  source CLI paths; a live initialize and tool-list handshake returned 22 tools.
+- Managed local services: web `http://127.0.0.1:5180` and daemon
+  `http://127.0.0.1:7456`.
+- Claude Code detection: version `2.1.251`; the live agent catalog includes the
+  moving aliases plus Claude Opus 5, Sonnet 5, and Fable 5.
 - `/usr/bin/od`: unrelated Linux octal-dump utility; never use it as OpenDesign.
 
-Part 0 upgrades the isolated OpenDesign toolchain, installs a pinned OpenDesign
-release outside the KCMS code repositories, installs the official Codex plugin,
-registers the local MCP using the actual OpenDesign CLI, and verifies the handshake.
-Optional Vela or cloud login is a separate user decision and is not part of local
-installation.
+The managed source services must be restarted after a workstation reboot. Optional
+OpenDesign Cloud login remains a separate user decision and is not configured or
+verified by the local installation.
 
 ## Slice Workflow
 

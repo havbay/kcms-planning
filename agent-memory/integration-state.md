@@ -12,8 +12,10 @@
 
 **Live cross-repository checks:** None.
 
-**OpenDesign integration:** Not installed. Codex and local package prerequisites
-are recorded in `05-opendesign-workflow.md`.
+**OpenDesign integration:** Runtime-confirmed. OpenDesign `0.21.1` is running at
+`http://127.0.0.1:5180`, its daemon is healthy at `http://127.0.0.1:7456`, and the
+registered Codex MCP completed a 22-tool handshake. OpenDesign Cloud is not
+configured or verified.
 
 **Next integration action:** Part 0 must establish backend health, frontend
 environment validation, OpenAPI generation, local proxy/CORS behavior, PostgreSQL,

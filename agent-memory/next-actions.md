@@ -7,11 +7,9 @@ Execute these actions in order:
    intentional; record the decision before any rename.
 3. Create and configure the chosen GitHub remote for `kcms-planning` without
    publishing secrets.
-4. Execute the OpenDesign installation section of Part 0 using Node 24 and pnpm
-   10.33.2, then verify the official Codex plugin and local MCP.
-5. Create and approve the initial KCMS V2 OpenDesign `DESIGN.md`.
-6. Complete and accept the backend runtime ADR.
-7. Complete and accept the frontend runtime ADR.
-8. Write the executable Part 0 repository-scaffolding sub-plan with exact files,
+4. Create and approve the initial KCMS V2 OpenDesign `DESIGN.md`.
+5. Complete and accept the backend runtime ADR.
+6. Complete and accept the frontend runtime ADR.
+7. Write the executable Part 0 repository-scaffolding sub-plan with exact files,
    commands, failing tests, and commit boundaries.
-9. Scaffold the two code repositories only after actions 1-8 are complete.
+8. Scaffold the two code repositories only after actions 1-7 are complete.
