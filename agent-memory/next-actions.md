@@ -5,8 +5,8 @@ Execute these actions in order:
 1. Review and accept `00-product-specification.md` with the team.
 2. Confirm whether the trailing hyphen in `kcms-backend-` and its GitHub remote is
    intentional; record the decision before any rename.
-3. Initialize and commit the `kcms-planning` repository, then configure its chosen
-   GitHub remote without publishing secrets.
+3. Create and configure the chosen GitHub remote for `kcms-planning` without
+   publishing secrets.
 4. Execute the OpenDesign installation section of Part 0 using Node 24 and pnpm
    10.33.2, then verify the official Codex plugin and local MCP.
 5. Create and approve the initial KCMS V2 OpenDesign `DESIGN.md`.

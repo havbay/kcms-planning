@@ -9,18 +9,21 @@ started.
 
 ## Repository State
 
-- `kcms-planning`: canonical planning files created locally; Git repository and
-  remote publication are not yet established.
-- `kcms-frontend`: empty Git repository on `main`, no commits, remote
-  `git@github.com:havbay/kcms-frontend.git` configured, remote main not present.
-- `kcms-backend-`: empty Git repository on `main`, no commits, remote
-  `git@github.com:havbay/kcms-backend-.git` configured, remote main not present.
+- `kcms-planning`: local Git repository on `main`; planning foundation committed
+  at `f75c166`; no remote configured.
+- `kcms-frontend`: no application scaffold; agent workflow committed on `main` at
+  `627e80c`; remote `git@github.com:havbay/kcms-frontend.git` configured, remote
+  main not present.
+- `kcms-backend-`: no application scaffold; agent workflow committed on `main` at
+  `85dbfdf`; remote `git@github.com:havbay/kcms-backend-.git` configured, remote
+  main not present.
 - KCMS v1: unchanged on `feature/kcms-full-redesign-bilingual`; it is reference
   evidence and not the V2 implementation base.
 
 ## Confirmed Evidence
 
-- `source-confirmed`: both V2 code directories contain only Git metadata.
+- `source-confirmed`: both V2 code repositories contain only their root agent
+  workflow and Git metadata; no runtime code exists.
 - `source-confirmed`: frontend and backend use independent Git repositories.
 - `source-confirmed`: backend local directory and remote currently include a
   trailing hyphen.
@@ -40,4 +43,5 @@ started.
 ## Last Verified Outcome
 
 The planning source of truth, vertical-slice roadmap, OpenDesign workflow, and
-agent-memory structure exist locally. No V2 application behavior is claimed.
+agent-memory structure are locally version-controlled. Both code repositories
+contain the canonical-memory pointer. No V2 application behavior is claimed.

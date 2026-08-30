@@ -2,7 +2,8 @@
 
 **Repository:** `/home/ggwp/dev/KCMS/KCMS-V2/kcms-frontend`
 
-**Status:** Empty initial Git repository; no application files or commits.
+**Status:** No application scaffold. The root agent workflow is committed on
+`main` at `627e80c`.
 
 **Remote:** `git@github.com:havbay/kcms-frontend.git`
 
