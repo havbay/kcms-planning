@@ -4,15 +4,17 @@
 
 **Active part:** Part 0 - Foundation
 
-**Part status:** Frontend foundation in progress. The first public header/hero
-slice is implemented and verified; backend and live integration have not started.
+**Part status:** Frontend foundation in progress. The complete public landing
+page is implemented, verified, and committed locally; backend and live
+integration have not started.
 
 ## Repository State
 
-- `kcms-planning`: planning-only worktree on `feature/v2-foundation`; no remote is
-  configured.
-- `kcms-frontend`: React/Vite scaffold and bilingual landing header/hero are on
-  `feature/landing-header-hero` in the canonical V2 folder; not pushed or merged.
+- `kcms-planning`: planning-only worktree on `main`; no remote is configured.
+- `kcms-frontend`: React/Vite scaffold and the complete bilingual landing page
+  (hero, how-it-works, Khmer context, human control, early access, footer) are on
+  `feature/landing-header-hero` in the canonical V2 folder; committed locally,
+  not pushed or merged.
 - `kcms-backend`: no application scaffold; agent workflow committed on `main` at
   `85dbfdf`; the foundation worktree is on `feature/v2-foundation` and its local
   `origin` targets the canonical name.
@@ -21,8 +23,8 @@ slice is implemented and verified; backend and live integration have not started
 
 ## Confirmed Evidence
 
-- `source-confirmed`: both V2 code repositories contain only their root agent
-  workflow and Git metadata; no runtime code exists.
+- `source-confirmed`: the V2 frontend contains a React/Vite public landing
+  implementation; the V2 backend application scaffold has not started.
 - `source-confirmed`: frontend and backend use independent Git repositories.
 - `source-confirmed`: `kcms-backend` is the accepted repository name and the local
   foundation-worktree remote targets it.
@@ -53,13 +55,16 @@ slice is implemented and verified; backend and live integration have not started
   boundary and never satisfies the live completion gate.
 - `source-confirmed`: D-017 accepts direct Codex UX/web-design handoffs and makes
   OpenDesign generation optional after explicit product-owner approval.
-- `runtime-confirmed`: Vitest 5/5, Playwright 3/3, strict TypeScript, ESLint, Vite
-  build, and desktop/mobile rendered checks pass for the landing header/hero.
+- `runtime-confirmed`: Vitest 15/15, Playwright 6/6, strict TypeScript, ESLint,
+  Vite build, `git diff --check`, and rendered checks at 1440x1000, 1024x800, and
+  375x812 pass for the complete bilingual landing page.
 
 ## Remaining Preconditions And External Work
 
-- Review the implemented landing header/hero before expanding to the next public
-  landing section.
+- Product-owner review of the complete landing page, then a Vercel preview
+  deployment for team review.
+- Decide whether the unbuilt `/contact` and `/privacy` footer routes should be
+  linked before those pages exist.
 - Choose and configure a remote for `kcms-planning` separately.
 - Application implementation and runtime proof have not started.
 
@@ -68,5 +73,6 @@ slice is implemented and verified; backend and live integration have not started
 The accepted product direction, frontend-first roadmap, repository name, runtime
 ADRs, and API health semantics are planning-source evidence. The exact Part 0
 implementation plan remains the next planning deliverable.
-Earlier OpenDesign tool integration remains runtime-confirmed. No React, FastAPI,
-PostgreSQL, generated-client, or live cross-repository behavior is claimed.
+Earlier OpenDesign tool integration remains runtime-confirmed. React/Vite public
+landing work is locally verified. No FastAPI, PostgreSQL, generated-client, or
+live cross-repository behavior is claimed.
