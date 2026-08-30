@@ -98,4 +98,3 @@ This ADR records an accepted planning decision. No React application, generated
 client, MSW boundary, build, component test, or Playwright journey was executed by
 this planning-only change. Those claims remain unverified until the Part 0 plan is
 implemented and its commands pass.
-

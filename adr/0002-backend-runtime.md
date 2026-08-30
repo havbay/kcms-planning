@@ -98,4 +98,3 @@ This ADR records an accepted planning decision. No FastAPI application, PostgreS
 connection, OpenAPI export, migration, or runtime command was executed by this
 planning-only change. Those claims remain unverified until the exact Part 0 plan
 produces test-confirmed and runtime-confirmed evidence.
-
