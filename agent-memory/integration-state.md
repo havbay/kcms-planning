@@ -22,6 +22,11 @@ types are committed, so no build needs the tool.
 Both halves are live and talking to each other. `CORS_ORIGINS` on the backend
 allows the Vercel origin.
 
+The pilot-onboarding contract is currently verified only in the local stack. It
+must not be counted as production evidence until the frontend and backend
+branches are pushed, Render finishes the new deploy, and the Vercel flow is
+retested against it.
+
 ## Verified end to end in production
 
 - Sign-up creates an isolated workspace seeded with its own comments.
@@ -45,6 +50,17 @@ database   docker compose up -d                      127.0.0.1:5432
 
 CORS is port-exact: running the frontend on 5174 against a backend allowing 5173
 produces a `400` preflight, not an obvious error.
+
+## Locally verified pending slice
+
+- A visitor submits `POST /api/v1/pilot-requests` without authentication.
+- Only a Platform Administrator can list and decide pilot requests.
+- Approval creates a one-time owner setup invitation without emailing a password.
+- `/setup/:token` previews and accepts the invitation, establishes a session,
+  and rejects reused, revoked or expired links.
+- SMTP is optional; delivery state is audited and the administrative manual-link
+  fallback keeps the flow operable without a provider.
+- The updated OpenAPI artifact and generated frontend types match the boundary.
 
 ## Testing seam
 

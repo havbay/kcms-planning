@@ -10,6 +10,10 @@ run against a deployed backend and PostgreSQL. Platform Administration exists fo
 access requests only. Remaining work is depth in the moderation workflow, the
 rest of Platform Administration, and real Facebook ingestion.
 
+**Pending review:** Public pilot requests, administrator review, optional SMTP
+delivery, one-time client setup and the expanded landing page are complete in the
+local feature branches. They are deliberately not described as live yet.
+
 ## Repository State
 
 All three repositories are on GitHub under `havbay` and are pushed.
@@ -32,8 +36,8 @@ All three repositories are on GitHub under `havbay` and are pushed.
 - Bilingual landing page: hero and Comment Pathway, How KCMS works, Built for
   Khmer, Human control, Early access, footer.
 - Sticky header, mobile navigation drawer, English/Khmer switching throughout.
-- `/request-access`, `/contact`, `/privacy` and unknown routes render notice
-  pages, never a blank screen.
+- `/request-access` is a real bilingual pilot form. `/contact`, `/privacy` and
+  unknown routes render notice pages, never a blank screen.
 
 **Authentication**
 - Email and password sign-up and sign-in with scrypt hashing.
@@ -60,6 +64,8 @@ All three repositories are on GitHub under `havbay` and are pushed.
 **Platform Administration**
 - Access requests: list, approve, decline with a reason. The response provably
   carries no comment content at any nesting level.
+- Local pending slice: separate public pilot queue, approval/decline, delivery
+  state and manual setup-link fallback.
 
 **Backend**
 - Health, paginated comments, a database-computed workspace summary, actions,
@@ -70,10 +76,11 @@ All three repositories are on GitHub under `havbay` and are pushed.
 
 ## Confirmed Evidence
 
-- `runtime-confirmed`: 68 backend tests pass, including integration tests against
+- `runtime-confirmed-local`: 75 backend tests pass, including integration tests against
   real PostgreSQL.
-- `runtime-confirmed`: 19 frontend unit tests and 22 Playwright tests pass, with
-  strict TypeScript, ESLint, and the Vite production build.
+- `runtime-confirmed-local`: 26 frontend unit tests and 24 Playwright tests pass
+  with one intentional skip, with strict TypeScript, ESLint, and the Vite
+  production build.
 - `runtime-confirmed`: security guards are mutation-tested. Deleting the
   platform-admin guard, the comment-content leak check, the owner-only guard,
   invitation single-use, or last-owner protection each fails a test.
@@ -112,6 +119,8 @@ All three repositories are on GitHub under `havbay` and are pushed.
 - `TELEGRAM_BOT_TOKEN` and `TELEGRAM_BOT_USERNAME` are unset, so Telegram
   sign-in is dormant.
 - Real Facebook ingestion is untested.
+- Transactional email is not configured. The new flow currently uses its audited
+  manual-link fallback until a sender domain and SMTP credentials are supplied.
 
 ## Not Yet Implemented
 
@@ -126,5 +135,4 @@ All three repositories are on GitHub under `havbay` and are pushed.
   ingestion port does not. Real Facebook ingestion is untested.
 - A workspace switcher. Someone who belongs to two workspaces cannot return to
   their sandbox.
-- `/admin/requests` still uses the card layout and no longer matches the density
-  of the moderation table.
+- Workspace, user, fleet-health and audit-log administration views do not exist.

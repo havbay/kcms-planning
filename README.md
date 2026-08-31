@@ -22,7 +22,26 @@ KCMS-V2/
 | [`kcms-backend`](https://github.com/havbay/kcms-backend) | https://kcms-backend.onrender.com | Render, Singapore |
 | [`kcms-planning`](https://github.com/havbay/kcms-planning) | — | — |
 
-Both applications auto-deploy on push to `main`.
+Vercel auto-deploys the frontend from `main`. Render's repository webhook is
+currently unreliable, so backend deploy completion must be checked explicitly.
+
+## Current Delivery Boundary
+
+The deployed product contains the public site, authentication, isolated client
+workspace, moderation and request administration. An expanded landing page and
+the complete public pilot-onboarding journey are implemented in local feature
+branches pending owner review:
+
+```
+public request ──▶ administrator decision ──▶ optional SMTP
+                                                    └─▶ manual setup link
+                                                             │
+                                                             ▼
+                                               client chooses password
+```
+
+Email delivery is optional by design; the approval journey remains functional
+and audited before a provider is configured.
 
 ## Reading Order
 

@@ -4,16 +4,21 @@
 **Remote:** `git@github.com:havbay/kcms-frontend.git`
 **Live:** https://kcms-frontend.vercel.app
 
-**Status:** Deployed on Vercel from `main`. The public site, authentication, and
-the complete client dashboard are implemented against the live API. The dashboard
-has no placeholder sections left. Platform Administration exists for access
-requests only.
+**Status:** The previously approved public site, authentication and client
+dashboard are deployed from `main`. The expanded landing page and public pilot
+onboarding are implemented locally on `feature/landing-header-hero`; they are not
+live until reviewed, pushed and deployed.
 
 ## Implemented
 
 **Public** - bilingual landing page with sticky header and a mobile navigation
-drawer; notice pages for every route that is not yet built, so no path renders
-blank.
+drawer, interactive service overview, FAQ, honest early-access section and
+footer. `/request-access` is a real bilingual pilot form with preserved input on
+network failure rather than a notice page.
+
+**Invited owner setup** - `/setup/:token` previews a one-time invitation and lets
+the client choose their own password. Loading, invalid/expired, failed and success
+states are explicit in Khmer and English. No password is displayed or emailed.
 
 **Authentication** - sign-up and sign-in with per-field inline validation
 (`aria-describedby`, `aria-invalid`, validated on blur); Telegram Login Widget
@@ -24,7 +29,9 @@ token session restored on load; route guard; sign-out.
 sections: Overview, Moderate, Page connection, Team and Settings. Overview reads
 a database-computed summary. Moderate is a paginated table with an expandable
 detail row. Administration appears in the sidebar only for platform
-administrators.
+administrators. The request queue covers Page-connection and public-pilot
+requests; approval shows email status and a manual setup-link fallback when
+necessary.
 
 **Application density** - the dashboard uses its own type scale, scoped to
 `.dashboard` and `.admin-shell`, so the marketing pages keep their presence. Body
@@ -43,8 +50,9 @@ the build never needs the tool.
 
 ## Tests And Runtime Evidence
 
-19 Vitest and 22 Playwright tests pass, with strict TypeScript, ESLint, and the
-Vite production build. Verified at 1440x1000, 1280x800, 1024x800 and 375x812 in
+26 Vitest and 24 Playwright tests pass, with one intentional Playwright skip,
+strict TypeScript, ESLint, and the Vite production build. Verified at 1440x1000,
+1280x800, 1024x800 and 375x812 in
 both languages, with no horizontal overflow and a clean browser console.
 
 Playwright runs six browsers in parallel and fails with
@@ -62,10 +70,10 @@ itself". No invented pricing, metrics, testimonials, or accuracy claims.
 
 Comment context with post and parent, work list filtering, full moderation
 history, Page Policy, metrics with denominators, a workspace switcher, and
-Platform Administration beyond access requests.
+Platform Administration beyond request review.
 
-`/admin/requests` still uses the card layout and no longer matches the density of
-the moderation table.
+The request administration view intentionally remains a decision queue rather
+than a moderation-style data table; workspace/user/fleet views do not yet exist.
 
 The dashboard is desktop-first while the first market runs its business on a
 phone. Raised and deliberately deferred.

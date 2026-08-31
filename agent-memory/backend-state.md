@@ -4,8 +4,9 @@
 **Remote:** `git@github.com:havbay/kcms-backend.git`
 **Live:** https://kcms-backend.onrender.com
 
-**Status:** Deployed on Render (Singapore, free plan) with a free PostgreSQL 16
-instance, running from `main`.
+**Status:** The previously approved stack is deployed on Render. Pilot onboarding
+and optional SMTP delivery are implemented and verified locally on
+`feature/moderation-slice`; they are not live until reviewed, pushed and deployed.
 
 ## Implemented
 
@@ -32,6 +33,15 @@ copy of the sample comments. Cross-workspace access returns 404, never 403.
 **Access requests** — a sandbox workspace requests a Page connection; a Platform
 Administrator approves or declines. Approval lifts `workspace.is_sandbox`.
 
+**Pilot onboarding** — a visitor submits a public request without creating an
+account. A Platform Administrator approves or declines it. Approval creates an
+approved workspace and a seven-day, single-use owner setup link; the invitee
+chooses their own password. Existing accounts are upgraded instead of duplicated.
+
+**Notifications** — provider-neutral email contract with an SMTP adapter. Every
+attempt is audited. When SMTP is incomplete or unavailable, approval remains
+usable through an administrative copy-link fallback marked `MANUAL_REQUIRED`.
+
 **Team** — membership with `owner`/`member`, and single-use invitation links
 that expire in seven days. Only the token hash is stored.
 
@@ -40,11 +50,13 @@ that expire in seven days. Only the token hash is stored.
 ## Layout
 
 ```
-migrations/            forward-only SQL, applied at startup, numbered 001-007
+migrations/            forward-only SQL, applied at startup, numbered 001-008
 src/kcms/
 ├── api/               routing and transport schemas
 ├── auth/              identity, sessions, security primitives
 ├── access/            page connection requests
+├── pilot/             public requests and owner setup invitations
+├── notifications/     delivery contract and SMTP adapter
 ├── team/              membership and invitations
 ├── moderation/        classifier seam, pattern matcher, repository, seeds
 ├── shared/database/   asyncpg pool and migration runner
@@ -54,10 +66,11 @@ openapi.json           contract artifact; a test asserts byte equality
 
 ## Tests
 
-68 pass, including integration tests against real PostgreSQL. Security guards are
+75 pass, including integration tests against real PostgreSQL. Security guards are
 mutation-tested: each is deleted to confirm a test fails, then restored. Verified
 this way are the platform-admin guard, the comment-content leak check, the
-owner-only guard, invitation single-use, and last-owner protection.
+owner-only guard, invitation single-use, last-owner protection, and the new pilot
+request administration boundary.
 
 ## Environment
 
@@ -67,6 +80,9 @@ owner-only guard, invitation single-use, and last-owner protection.
 | `CORS_ORIGINS` | Comma-separated; port-exact, a mismatch gives a 400 preflight |
 | `PLATFORM_ADMIN_EMAILS` | Grants Platform Administration at sign-in; reconciled every sign-in so removal revokes |
 | `TELEGRAM_BOT_TOKEN` / `TELEGRAM_BOT_USERNAME` | Unset, so Telegram sign-in stays hidden |
+| `PUBLIC_FRONTEND_URL` | Base URL used to generate setup and sign-in links |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` | Optional transactional-email connection |
+| `SMTP_FROM_EMAIL`, `SMTP_FROM_NAME` | Verified sender identity; required to enable SMTP |
 
 ## Operational notes
 
@@ -83,5 +99,5 @@ owner-only guard, invitation single-use, and last-owner protection.
 
 Comment context (`post_text` and `parent_text` are nullable and unpopulated) ·
 full moderation history endpoint · replaceable ingestion source interface · real
-Facebook ingestion · platform administration beyond access requests · False
+Facebook ingestion · platform administration beyond request review · False
 Suppression Rate and Missed Harm Rate.
