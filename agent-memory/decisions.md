@@ -109,3 +109,77 @@ approved direct-Codex UX/web-design brief may satisfy the pre-code design gate;
 OpenDesign generation is optional rather than mandatory. The first accepted
 direct handoff is the bilingual landing-page header and hero in
 `kcms-frontend/docs/design/part-0-landing-header-hero/`.
+
+## D-018: Open Sign-Up Into A Sandbox Workspace
+
+The MVP scope originally excluded public self-service signup, and the canonical
+journey began with a reviewed access request. That is superseded.
+
+Anyone may create an account. Each account owns an isolated sandbox workspace
+seeded with sample Khmer comments. Connecting a real Facebook Page remains gated
+on Platform Administrator approval.
+
+The reason is that Meta keeps the app in development mode, so the Graph API only
+works on Pages where one person holds both Page-admin and app-admin roles. Until
+App Review, a stranger cannot connect their own Page whatever the product
+promises. Gating sign-up would therefore block evaluation without protecting
+anything.
+
+Sign-up is open; capability is gated. The `workspace.is_sandbox` flag is what the
+gate reads. The reviewed-access-request path is still required before a workspace
+may connect a real Page.
+
+## D-019: Seeded Sample Comments Are Accepted In The Prototype
+
+The specification excludes fabricated sample customer records, and the frontend
+plan prohibits runtime sample data. Both remain true of the frontend: production
+entry points import no fixtures, and every figure shown is computed from API
+responses.
+
+The backend seeds each new workspace with hand-written Khmer comments. They are
+authored examples, never real user content, and they exist to exercise the
+contrast the product turns on: targeted abuse and scams against angry but
+legitimate complaint.
+
+They are labelled in the interface as a demo workspace with sample data. They are
+replaced, not supplemented, once real Facebook ingestion exists.
+
+## D-020: One Work List With A Recorded Surfacing Reason
+
+The specification defines three lanes: Triage, Review, and Audit. The
+implementation is a single ordered work list where every entry records why it
+surfaced: `triage`, `institution_sample`, `novel_language`, `uncertainty`, or
+`cleared`.
+
+The reason carries the same information with less navigation, and the surfacing
+reason is what downstream training needs in order to correct for selection bias.
+
+Random Audit as a separate lane is deferred until real traffic exists to sample.
+It is the only route by which false negatives become visible in production, so it
+returns before any accuracy claim is made, not before then.
+
+## D-021: Novel Language Is A Distinct Surfacing Reason
+
+Abstention covers low confidence inside what the classifier knows. It does not
+cover language the classifier has never seen.
+
+A pattern matcher that finds no rule match cannot distinguish "safe" from
+"unfamiliar". Treating both as cleared silently clears exactly the evolving Khmer
+slang the product exists to catch.
+
+Comments containing no recognised vocabulary abstain and surface as
+`novel_language`. This is the route by which new slang reaches a human and
+becomes a labelled seed-dataset candidate.
+
+## D-022: Bearer Tokens Rather Than Session Cookies
+
+The frontend and API are deployed on different sites, `vercel.app` and
+`onrender.com`. A `SameSite=None` cookie is blocked by default in Safari and
+several other browsers, so a signed-in visitor would appear signed out.
+
+Sessions are bearer tokens held in memory and mirrored to `localStorage`. Only
+the SHA-256 of a token is stored server-side, so a database leak does not hand
+over usable sessions.
+
+This is a deployment-shaped decision, not a preference. Serving both halves from
+one domain would make cookies viable again and is the better long-term answer.
