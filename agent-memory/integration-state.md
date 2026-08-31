@@ -1,25 +1,57 @@
 # Integration State
 
-**Contract revision:** Part 0 health semantics are source-confirmed in
-`03-api-contract.md`; no generated OpenAPI artifact exists yet.
+**Contract:** The backend generates `openapi.json` from the application factory.
+A test regenerates it and compares bytes, so drift fails deterministically.
 
-**Generated frontend client:** None. The public landing header/hero and "How
-KCMS works" section have no API-backed region and contain no production fixtures.
+**Generated frontend client:** `kcms-frontend/src/api/schema.d.ts`, produced by
+`npm run api:generate`, which copies the backend artifact and runs
+`openapi-typescript`. The file is committed and never hand-edited.
 
-**Local frontend URL:** Runtime-confirmed at `http://127.0.0.1:5173` for the
-public landing verification; this is a development server, not a deployment.
+`openapi-typescript` is invoked through `npx` rather than installed as a
+dependency: it peers on TypeScript 5 while the frontend uses 6. The generated
+types are committed, so no build needs the tool.
 
-**Local backend URL:** None.
+## Live environments
 
-**Database:** PostgreSQL is accepted for V2; no service is configured or verified.
+| | URL |
+|---|---|
+| Frontend | https://kcms-frontend.vercel.app |
+| Backend | https://kcms-backend.onrender.com |
+| Database | Render PostgreSQL 16, Singapore, free plan |
 
-**Live cross-repository checks:** None.
+Both halves are live and talking to each other. `CORS_ORIGINS` on the backend
+allows the Vercel origin.
 
-**Design integration:** The product owner selected direct Codex design under
-D-017 after the landing UX and visual direction were approved. OpenDesign remains
-installed and optional; its current Codex-task transport closed during one
-handoff attempt, so no OpenDesign artifact is claimed for this slice.
+## Verified end to end in production
 
-**Next integration action:** Review the current public landing page, then
-continue the public journey one approved section at a time. Backend health and
-the generated OpenAPI client remain required before Part 0 can complete.
+- Sign-up creates an isolated workspace seeded with its own comments.
+- The work list loads from PostgreSQL and paginates.
+- Actions persist and are attributed to the signed-in person by name.
+- Corrections persist without acting on the comment.
+- Two accounts cannot see or affect each other's comments; a foreign id gives 404.
+- A non-administrator is redirected away from `/admin/requests` and receives 403
+  from the administration endpoints.
+
+## Local development
+
+```
+backend    uv run uvicorn kcms.app:app --reload      127.0.0.1:8000
+frontend   npm run dev                               127.0.0.1:5173
+database   docker compose up -d                      127.0.0.1:5432
+```
+
+`VITE_API_BASE_URL` selects the API. Vite loads `.env.development` **after**
+`.env.local`, so `.env.development.local` is the file that overrides in dev.
+
+CORS is port-exact: running the frontend on 5174 against a backend allowing 5173
+produces a `400` preflight, not an obvious error.
+
+## Testing seam
+
+Frontend tests intercept at the network boundary (D-016); production modules
+import no fixtures. The Playwright stub must be extended whenever an endpoint is
+added, or pages that call it render nothing and unrelated tests fail.
+
+Playwright runs six browsers in parallel and fails with
+`Object with guid ... was not bound in the connection` under machine load. That
+is resource exhaustion, not a defect; re-run with `--workers=1`.
