@@ -5,9 +5,9 @@
 **Live:** https://kcms-frontend.vercel.app
 
 **Status:** Deployed on Vercel from `main`. The public site, authentication, and
-the client dashboard's Overview and Moderate sections are implemented against the
-live API. Page connection, Team, Settings, comment review detail, and all
-Platform Administrator views have not started.
+the complete client dashboard are implemented against the live API. The dashboard
+has no placeholder sections left. Platform Administration exists for access
+requests only.
 
 ## Implemented
 
@@ -20,10 +20,16 @@ blank.
 that only renders when the backend reports the provider is configured; bearer
 token session restored on load; route guard; sign-out.
 
-**Client dashboard** - sidebar shell with a sandbox notice; Overview with metrics
-derived entirely from live API data; Moderate with the work list, severity and
-target, surfacing reason, Leave/Hide/Unhide, and Corrections. Unbuilt sections
-appear as plain text marked "Not in the prototype", never as links.
+**Client dashboard** - sidebar shell with a sandbox notice, and five working
+sections: Overview, Moderate, Page connection, Team and Settings. Overview reads
+a database-computed summary. Moderate is a paginated table with an expandable
+detail row. Administration appears in the sidebar only for platform
+administrators.
+
+**Application density** - the dashboard uses its own type scale, scoped to
+`.dashboard` and `.admin-shell`, so the marketing pages keep their presence. Body
+text is 0.8125rem and table rows are roughly 47px, against 1rem and card-sized
+rows before. The public site is unchanged.
 
 ## Accepted Runtime
 
@@ -37,7 +43,7 @@ the build never needs the tool.
 
 ## Tests And Runtime Evidence
 
-19 Vitest and 14 Playwright tests pass, with strict TypeScript, ESLint, and the
+19 Vitest and 22 Playwright tests pass, with strict TypeScript, ESLint, and the
 Vite production build. Verified at 1440x1000, 1280x800, 1024x800 and 375x812 in
 both languages, with no horizontal overflow and a clean browser console.
 
@@ -54,10 +60,15 @@ itself". No invented pricing, metrics, testimonials, or accuracy claims.
 
 ## Not Yet Implemented
 
-Page connection, Team, Settings, Policy, comment review detail with post and
-parent context, full moderation history, metrics with denominators, request
-access as a stored record, invitation setup, recovery, and every Platform
-Administrator view.
+Comment context with post and parent, work list filtering, full moderation
+history, Page Policy, metrics with denominators, a workspace switcher, and
+Platform Administration beyond access requests.
 
-**Next frontend action:** Team. Workspaces and `membership` roles exist in the
-backend and nothing reads them yet.
+`/admin/requests` still uses the card layout and no longer matches the density of
+the moderation table.
+
+The dashboard is desktop-first while the first market runs its business on a
+phone. Raised and deliberately deferred.
+
+**Next frontend action:** comment context, which needs `post_text` and
+`parent_text` populated before the screen can be evaluated.

@@ -2,12 +2,13 @@
 
 **Updated:** 2026-08-31
 
-**Active part:** Part 1 - Client workspace
+**Active part:** Part 8 - Depth in the moderation workflow
 
-**Part status:** The full stack is live. Landing page, authentication, isolated
-client workspaces, the moderation work list, actions, and corrections all run
-against a deployed backend and PostgreSQL. Platform Administration and the
-remaining client workspace screens have not started.
+**Part status:** The full stack is live. The client dashboard is complete with no
+placeholder sections: Overview, Moderate, Page connection, Team and Settings all
+run against a deployed backend and PostgreSQL. Platform Administration exists for
+access requests only. Remaining work is depth in the moderation workflow, the
+rest of Platform Administration, and real Facebook ingestion.
 
 ## Repository State
 
@@ -46,24 +47,42 @@ All three repositories are on GitHub under `havbay` and are pushed.
   the sample Khmer comments.
 - Overview: comments processed, need review, reviewed, pending, a surfaced-reason
   breakdown, and moderation outcomes. Every figure derives from real data.
-- Moderate: the work list with severity, target, why each comment surfaced,
-  Leave/Hide/Unhide, and reversible history.
+- Moderate: a paginated table with severity, target, why each comment surfaced,
+  Leave/Hide/Unhide inline, and an expandable detail row carrying confidences,
+  model version, rationale and correction.
 - Corrections: a human states what the labels should be, without acting on the
   comment.
+- Page connection: a sandbox workspace requests a real Page; a Platform
+  Administrator approves or declines with a reason.
+- Team: membership with owner and member roles, and single-use invitation links.
+- Settings: workspace rename (owner only) and personal display name (anyone).
+
+**Platform Administration**
+- Access requests: list, approve, decline with a reason. The response provably
+  carries no comment content at any nesting level.
 
 **Backend**
-- `GET /api/v1/health`, `GET /api/v1/comments`,
-  `POST /api/v1/comments/{id}/actions`, `POST /api/v1/comments/{id}/corrections`,
-  and the `/api/v1/auth/*` surface.
+- Health, paginated comments, a database-computed workspace summary, actions,
+  corrections, access requests, administration decisions, team, settings, and
+  the `/api/v1/auth/*` surface. See `backend-state.md`.
 - Deterministic OpenAPI artifact with a byte-equality drift test.
 - Forward-only SQL migrations applied at startup.
 
 ## Confirmed Evidence
 
-- `runtime-confirmed`: 31 backend tests pass, including seven integration tests
-  against real PostgreSQL.
-- `runtime-confirmed`: 19 frontend unit tests and 14 Playwright tests pass, with
+- `runtime-confirmed`: 68 backend tests pass, including integration tests against
+  real PostgreSQL.
+- `runtime-confirmed`: 19 frontend unit tests and 22 Playwright tests pass, with
   strict TypeScript, ESLint, and the Vite production build.
+- `runtime-confirmed`: security guards are mutation-tested. Deleting the
+  platform-admin guard, the comment-content leak check, the owner-only guard,
+  invitation single-use, or last-owner protection each fails a test.
+- `runtime-confirmed`: the work list paginates with a deterministic sort. Without
+  a `comment_id` tiebreaker, rows sharing a timestamp appeared on more than one
+  page and others never appeared at all.
+- `runtime-confirmed`: the Overview summary is computed in the database, not
+  derived from a page of results, which would have under-reported once the list
+  was paginated.
 - `runtime-confirmed`: workspace isolation verified in production. Two fresh
   accounts receive disjoint comment ids; neither sees the other's actions; acting
   on another workspace's comment id returns 404, not 403, so existence is not
@@ -85,23 +104,27 @@ All three repositories are on GitHub under `havbay` and are pushed.
 
 ## Remaining Preconditions And External Work
 
+- The Render GitHub webhook is not firing; pushes to `main` do not auto-deploy
+  and deploys are triggered manually through the API.
 - The GitHub account is billing-locked, so GitHub Actions cannot run. The
-  `keep-warm` workflow is committed and blocked on this.
-- No uptime ping is configured. The Render free plan sleeps after roughly fifteen
-  minutes, and the first request then takes thirty to sixty seconds.
-- The Render GitHub webhook is not firing; pushes to `main` do not auto-deploy.
+  keep-warm workflow was removed in favour of an external ping.
+- cron-job.org pings `/api/v1/health` to keep the free instance warm.
 - `TELEGRAM_BOT_TOKEN` and `TELEGRAM_BOT_USERNAME` are unset, so Telegram
   sign-in is dormant.
 - Real Facebook ingestion is untested.
 
 ## Not Yet Implemented
 
-- Client workspace: Page connection, Team, Settings, Policy, comment review
-  detail with post and parent context, full history, and metrics with
-  denominators.
-- Public: request access as a stored record, invitation setup, recovery.
-- Platform Administrator: nothing. Access requests, workspace onboarding, user
-  support, fleet health, integration health, audited support actions.
+- Comment context. `post_text` and `parent_text` exist in `comment_content` but
+  nothing populates them.
+- Work list filtering and full moderation history.
+- Platform Administration beyond access requests: workspaces, users, fleet
+  health, audit log.
+- Page Policy, and metrics with denominators. False Suppression Rate and Missed
+  Harm Rate do not exist.
 - A replaceable ingestion source interface. The classifier seam exists; the
-  ingestion port does not.
-- False Suppression Rate and Missed Harm Rate.
+  ingestion port does not. Real Facebook ingestion is untested.
+- A workspace switcher. Someone who belongs to two workspaces cannot return to
+  their sandbox.
+- `/admin/requests` still uses the card layout and no longer matches the density
+  of the moderation table.
