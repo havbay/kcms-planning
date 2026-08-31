@@ -19,11 +19,17 @@ request or response interfaces.
 
 ## Authentication
 
-- Browser authentication uses an HttpOnly session cookie.
-- `GET /api/v1/me` returns identity, capabilities, and accessible workspaces.
-- Invalid or expired sessions return `401` with a stable error code.
+- Browser authentication uses a bearer token in `Authorization`, not a cookie.
+  The frontend and API are served from different sites, where `SameSite=None`
+  cookies are blocked by default in several browsers. See D-022.
+- Only the SHA-256 of a session token is stored server-side.
+- `GET /api/v1/auth/me` returns the signed-in identity.
+- `GET /api/v1/auth/providers` reports which sign-in providers are configured, so
+  the frontend never renders a provider that cannot work.
+- Invalid or expired sessions return `401`.
 - Authenticated users without a capability receive `403`.
-- Resource identifiers outside the user's workspace do not disclose private data.
+- Resource identifiers outside the user's workspace return `404`, not `403`. A
+  `403` would confirm the resource exists in someone else's workspace.
 
 ## Part 0 Health Boundary
 
@@ -105,3 +111,69 @@ identifier tie-breaker.
 7. Add allowed and denied backend behavior tests where authentication applies.
 8. Run the live cross-repository Playwright journey.
 9. Record the verified contract revision in `agent-memory/integration-state.md`.
+
+
+## Part 1 Page Connection Requests
+
+A sandbox workspace asks to connect a real Facebook Page; a Platform
+Administrator decides. Approval lifts `workspace.is_sandbox`. It does not itself
+connect a Page: Meta OAuth is a later slice.
+
+### Client
+
+`POST /api/v1/access-requests` — `operationId: createAccessRequest`
+
+```json
+{
+  "page_name": "facebook.com/angkorshop",
+  "monthly_comments": "1K_TO_10K",
+  "team_size": "2_TO_5",
+  "note": "We get a lot of scam replies on product posts."
+}
+```
+
+- `monthly_comments`: `UNDER_1K` · `1K_TO_10K` · `10K_TO_50K` · `OVER_50K`
+- `team_size`: `JUST_ME` · `2_TO_5` · `6_TO_20` · `OVER_20`
+- `note` is optional and bounded.
+- Returns `201` with the created request.
+- A workspace holds at most one open request. Submitting while one is `PENDING`
+  replaces it, and still returns `201`.
+- A workspace that is no longer a sandbox returns `409`.
+
+`GET /api/v1/access-requests/mine` — `operationId: getMyAccessRequest`
+
+Returns the workspace's latest request, or `204` when none exists. Includes
+`status`, and `decision_reason` when declined.
+
+### Platform Administrator
+
+`GET /api/v1/admin/access-requests` — `operationId: listAccessRequests`
+
+Optional `status` filter. Returns workspace name, requester display name and
+email, Page, volume, team size, note, status, and decision metadata.
+
+**This response never contains comment content, at any nesting level.** The
+product specification forbids Platform Administrators from browsing customer
+comments through ordinary administration views, and this is the first endpoint
+where that rule is testable rather than aspirational.
+
+`POST /api/v1/admin/access-requests/{id}/decision` — `operationId: decideAccessRequest`
+
+```json
+{ "decision": "APPROVED" }
+{ "decision": "DECLINED", "reason": "Page is not currently reachable." }
+```
+
+- `reason` is required when declining and rejected as `422` when absent.
+- Approving sets `workspace.is_sandbox = false`.
+- Deciding an already-decided request returns `409`.
+- Both admin endpoints return `403` for a signed-in non-administrator.
+
+### Platform Administrator identity
+
+Platform Administration is a platform-level role and is not expressible through
+`membership.role`, which scopes a user to one workspace.
+
+`app_user.is_platform_admin` is set from a `PLATFORM_ADMIN_EMAILS` environment
+allowlist when a matching account signs in. It is never settable through the API,
+so the role cannot be self-assigned or escalated by any request.

@@ -183,3 +183,23 @@ over usable sessions.
 
 This is a deployment-shaped decision, not a preference. Serving both halves from
 one domain would make cookies viable again and is the better long-term answer.
+
+## D-023: Contract First, Then The Half That Carries The Risk
+
+D-016 requires an accepted design handoff and an accepted backend-owned OpenAPI
+artifact before implementation, and then states the frontend is implemented
+first. The moderation and authentication slices were built backend-first without
+recording an exception.
+
+The sequence that holds is: design the screens, define the contract they need,
+then implement the half where the risk sits.
+
+- A slice whose risk is the interface implements the frontend first, against
+  network interception, exactly as D-016 describes.
+- A slice whose risk is authorization implements the backend first, so the
+  boundary is proven by tests before any interface depends on it.
+
+The design handoff and the contract still come first in both cases, and live
+frontend, API and persistence proof is still required before a slice completes.
+Part 1 is authorization-shaped: who is a Platform Administrator, and the rule
+that administrators cannot read customer comments.
