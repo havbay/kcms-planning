@@ -29,10 +29,14 @@ client-facing MVP role.
 
 ## Canonical Customer Journey
 
-1. A visitor submits a request for access.
-2. A Platform Administrator reviews the request and creates a workspace.
-3. The Platform Administrator invites the first Client user.
-4. The Client sets a password and signs in.
+Superseded in part by D-018: sign-up is open, and capability is gated.
+
+1. A visitor creates an account with email or Telegram.
+2. The account receives an isolated sandbox workspace containing sample Khmer
+   comments, so the product can be evaluated before any Page is connected.
+3. To connect a real Facebook Page, the Client submits a request for access.
+4. A Platform Administrator reviews the request and lifts the sandbox
+   restriction on that workspace.
 5. The Client connects a Facebook Page and may invite trusted teammates.
 6. Ingestion receives comments from the connected Page.
 7. The disclosed pattern-matching classifier produces a versioned Verdict.
@@ -95,11 +99,17 @@ abstention state, a rationale when available, and the model version.
 
 ## Work List Lanes
 
-- **Triage:** highest-risk surfaced comments, ordered for harm reduction.
-- **Review:** bounded low-confidence, abstained, and institution-directed samples.
-- **Audit:** rotating samples of cleared and completed human-reviewed comments.
+Implemented as one ordered list under D-020. Every surfaced record keeps the
+reason it reached a human, which carries the same information the lanes did:
 
-Each surfaced record keeps the reason it reached a human.
+- `triage` - highest-risk surfaced comments, ordered for harm reduction.
+- `institution_sample` - institution-directed criticism, never routed for removal.
+- `uncertainty` - low confidence or abstained.
+- `novel_language` - vocabulary the classifier does not recognise (D-021).
+- `cleared` - no risk pattern matched.
+
+Random Audit returns as a distinct lane before any accuracy claim is published.
+It is the only route by which false negatives become visible in production.
 
 ## MVP Scope
 
@@ -120,7 +130,6 @@ Each surfaced record keeps the reason it reached a human.
 
 ## Out Of Scope For Initial MVP
 
-- Public self-service signup.
 - Billing automation.
 - Native mobile applications.
 - Multi-organization enterprise hierarchy above customer workspaces.
@@ -130,7 +139,10 @@ Each surfaced record keeps the reason it reached a human.
   exist.
 - Automatic model retraining.
 - Automatic hiding before shadow-mode evidence and explicit customer approval.
-- Fabricated production analytics or sample customer records.
+- Fabricated production analytics.
+- Real customer comment content used as sample data. Authored Khmer examples
+  seeded into sandbox workspaces are accepted under D-019 and are labelled as
+  such in the interface.
 
 ## MVP Success Criteria
 
