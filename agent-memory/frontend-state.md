@@ -4,10 +4,10 @@
 **Remote:** `git@github.com:havbay/kcms-frontend.git`
 **Live:** https://kcms-frontend.vercel.app
 
-**Status:** The approved production baseline is live from `main`. Expanded
-onboarding, Page Connection, and moderation-depth work is local on
-`feature/landing-header-hero` and must not be described as live until reviewed,
-pushed, deployed, and checked against the deployed backend.
+**Status:** Onboarding, Page Connection, and moderation depth are deployed from
+`main` at commit `516996f`. The production JavaScript asset was checked for the
+new Facebook connection methods, search, and source-post interface. Live Meta
+authorization remains unavailable until provider configuration is supplied.
 
 ## Implemented
 
@@ -36,7 +36,7 @@ Playwright. API types are generated from the backend-owned OpenAPI artifact with
 
 ## Verification
 
-The current local slice passes 31 Vitest tests, strict TypeScript, ESLint with no
+The released slice passes 31 Vitest tests, strict TypeScript, ESLint with no
 errors, the Vite production build, and 24 Playwright tests with one intentional
 skip. Browser inspection covered desktop and phone widths in the real local app:
 no page-level horizontal overflow, 10 moderation rows per page, an internal
@@ -54,6 +54,6 @@ Live Meta verification, comment synchronization, provider-side hide/unhide,
 full moderation history, workspace switching, broader Platform Administration,
 and the trained Khmer model.
 
-**Next frontend action:** only after the live Facebook source contract works,
+**Next frontend action:** after the live Facebook source contract works,
 replace seeded context with real synchronized posts/comments and verify the same
 review UI against a controlled Page.

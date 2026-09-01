@@ -12,10 +12,11 @@ byte equality, and the frontend vendors that artifact and regenerates
 | Backend | https://kcms-backend.onrender.com |
 | Database | Render PostgreSQL 16, Singapore |
 
-The deployed baseline is live. The onboarding, Page Connection, and expanded
-moderation contract are currently local only.
+The onboarding, Page Connection, and expanded moderation contract are deployed.
+Frontend commit `516996f` is live on Vercel and backend commit `b99f780` is live
+on Render.
 
-## Local verified boundary
+## Verified contract boundary
 
 - Authenticated Client Page Connection supports Facebook authorization and an
   advanced Page token. Controlled Meta test doubles verify both acquisition
@@ -27,6 +28,9 @@ moderation contract are currently local only.
 - The frontend consumes the regenerated contract and renders connection,
   compact moderation, context panel, Actions, and Corrections.
 - Desktop and mobile browser checks show no page-level overflow.
+- Production health is `READY/REACHABLE`; deployed OpenAPI contains the new
+  connection and moderation fields, and protected endpoints reject anonymous
+  requests with `401`.
 
 ## Live evidence still required
 

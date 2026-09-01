@@ -4,9 +4,10 @@
 **Remote:** `git@github.com:havbay/kcms-backend.git`
 **Live:** https://kcms-backend.onrender.com
 
-**Status:** The production baseline is deployed on Render. Pilot onboarding,
-optional SMTP, Page Connection, and moderation-depth changes are verified only
-locally on `feature/moderation-slice` until reviewed and deployed.
+**Status:** Pilot onboarding, optional SMTP, Page Connection, and moderation
+depth are deployed from `main` at commit `b99f780`. Render reports that deploy
+live, health is `READY/REACHABLE`, the new OpenAPI operations are present, and
+anonymous Page/comment requests return `401`.
 
 ## Implemented
 

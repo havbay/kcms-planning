@@ -8,7 +8,7 @@ onboarding, identity, isolated Client workspace, overview, moderation Actions,
 Corrections, team, settings, and request administration exist. The trained Khmer
 model remains future work; the current disclosed engine is PatternMatcher v0.1.
 
-## Current local slice
+## Current released slice
 
 - Client Page Connection now uses a real product workflow rather than a request
   form: **Continue with Facebook** or an advanced **Page access token**.
@@ -34,9 +34,9 @@ model remains future work; the current disclosed engine is PatternMatcher v0.1.
 
 | Repository | Active branch | Publication state |
 |---|---|---|
-| `kcms-frontend` | `feature/landing-header-hero` | local changes, not pushed/deployed |
-| `kcms-backend` | `feature/moderation-slice` | local changes, not pushed/deployed |
-| `kcms-planning` | `feature/moderation-slice` | local changes, not pushed |
+| `kcms-frontend` | `main` | `516996f`, deployed on Vercel |
+| `kcms-backend` | `main` | `b99f780`, deployed on Render |
+| `kcms-planning` | `main` | `9b1fa55`, pushed |
 
 KCMS v1 remains unchanged and is reference evidence only.
 
