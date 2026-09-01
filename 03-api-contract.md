@@ -113,63 +113,7 @@ identifier tie-breaker.
 9. Record the verified contract revision in `agent-memory/integration-state.md`.
 
 
-## Part 1 Page Connection Requests
-
-A sandbox workspace asks to connect a real Facebook Page; a Platform
-Administrator decides. Approval lifts `workspace.is_sandbox`. It does not itself
-connect a Page: Meta OAuth is a later slice.
-
-### Client
-
-`POST /api/v1/access-requests` — `operationId: createAccessRequest`
-
-```json
-{
-  "page_name": "facebook.com/angkorshop",
-  "monthly_comments": "1K_TO_10K",
-  "team_size": "2_TO_5",
-  "note": "We get a lot of scam replies on product posts."
-}
-```
-
-- `monthly_comments`: `UNDER_1K` · `1K_TO_10K` · `10K_TO_50K` · `OVER_50K`
-- `team_size`: `JUST_ME` · `2_TO_5` · `6_TO_20` · `OVER_20`
-- `note` is optional and bounded.
-- Returns `201` with the created request.
-- A workspace holds at most one open request. Submitting while one is `PENDING`
-  replaces it, and still returns `201`.
-- A workspace that is no longer a sandbox returns `409`.
-
-`GET /api/v1/access-requests/mine` — `operationId: getMyAccessRequest`
-
-Returns the workspace's latest request, or `204` when none exists. Includes
-`status`, and `decision_reason` when declined.
-
-### Platform Administrator
-
-`GET /api/v1/admin/access-requests` — `operationId: listAccessRequests`
-
-Optional `status` filter. Returns workspace name, requester display name and
-email, Page, volume, team size, note, status, and decision metadata.
-
-**This response never contains comment content, at any nesting level.** The
-product specification forbids Platform Administrators from browsing customer
-comments through ordinary administration views, and this is the first endpoint
-where that rule is testable rather than aspirational.
-
-`POST /api/v1/admin/access-requests/{id}/decision` — `operationId: decideAccessRequest`
-
-```json
-{ "decision": "APPROVED" }
-{ "decision": "DECLINED", "reason": "Page is not currently reachable." }
-```
-
-- `reason` is required when declining and rejected as `422` when absent.
-- Approving sets `workspace.is_sandbox = false`.
-- Deciding an already-decided request returns `409`.
-- Both admin endpoints return `403` for a signed-in non-administrator.
-
-### Platform Administrator identity
+## Platform Administrator Identity
 
 Platform Administration is a platform-level role and is not expressible through
 `membership.role`, which scopes a user to one workspace.
@@ -180,8 +124,10 @@ so the role cannot be self-assigned or escalated by any request.
 
 ## Client Facebook Page Connection
 
-All endpoints require a Client session and an approved, non-sandbox workspace.
-One workspace has at most one active Page Connection. Provider credentials are
+All endpoints require a Client session and workspace membership. Pilot access
+approval already occurred before the Client created credentials, so Page
+Connection has no second KCMS approval endpoint or sandbox exception. One
+workspace has at most one active Page Connection. Provider credentials are
 encrypted at rest and never occur in a response.
 
 | Method | Path | operationId |

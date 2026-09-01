@@ -381,22 +381,22 @@ Deployed and running against real PostgreSQL.
 | Area | Status |
 |---|---|
 | Public site, bilingual Khmer/English | Live |
-| Sign-up and sign-in (email; Telegram ready) | Live |
+| Reviewed pilot access, invitation setup, and sign-in | Live |
 | Isolated client workspaces | Live |
 | Moderation work list, paginated | Live |
 | Actions — leave / hide / unhide, reversible | Live |
 | Corrections, separate from actions | Live |
-| Page connection request and admin review | Live |
+| Direct Client Page connection (Facebook Login or advanced token) | Live |
 | Team membership and invitation links | Live |
 | Workspace and account settings | Live |
-| Platform administration — access requests | Live |
-| Comment review detail with post and parent context | Not built |
+| Platform administration — pilot-access review | Live |
+| Comment review detail with post and parent context | Live |
 | Real Facebook ingestion | Not built |
 | Trained Khmer model | Not built |
 
-**Verification:** 68 backend tests including integration tests against real
-PostgreSQL, 19 frontend unit tests, 22 browser tests. Security guards are
-mutation-tested — each is deleted to confirm a test fails, then restored.
+**Verification:** 77 backend tests including integration tests against real
+PostgreSQL and 34 frontend unit tests pass. Browser verification is repeated for
+each deployable slice.
 
 ---
 
@@ -528,19 +528,27 @@ image-based evasion occurs and report the figure.
 
 ```
 GET    /api/v1/health                                database-aware probe
-POST   /api/v1/auth/signup · signin · telegram       sessions
+POST   /api/v1/auth/signin · telegram                sessions
 GET    /api/v1/auth/me · providers
 POST   /api/v1/auth/signout
+
+POST   /api/v1/pilot-requests                       public pilot request
+GET    /api/v1/admin/pilot-requests                 platform admin only
+POST   /api/v1/admin/pilot-requests/{id}/decision
+GET    /api/v1/setup-invitations/{token}            one-time owner setup
+POST   /api/v1/setup-invitations/{token}
 
 GET    /api/v1/comments                              paginated work list
 GET    /api/v1/comments/summary                      workspace-wide counts
 POST   /api/v1/comments/{id}/actions                 hide · leave · unhide
 POST   /api/v1/comments/{id}/corrections             label correction
 
-POST   /api/v1/access-requests                       request Page connection
-GET    /api/v1/access-requests/mine
-GET    /api/v1/admin/access-requests                 platform admin only
-POST   /api/v1/admin/access-requests/{id}/decision
+GET    /api/v1/facebook/connection                  current Page connection
+DELETE /api/v1/facebook/connection                  disconnect Page
+POST   /api/v1/facebook/oauth/start                 begin Facebook authorization
+GET    /api/v1/facebook/oauth/sessions/{state}      list authorized Pages
+POST   /api/v1/facebook/oauth/sessions/{state}/selection
+POST   /api/v1/facebook/connections/manual          advanced Page-token setup
 
 GET    /api/v1/team                                  members and invitations
 POST   /api/v1/team/invitations                      owner only

@@ -15,13 +15,13 @@ model remains future work; the current disclosed engine is PatternMatcher v0.1.
 - Both methods converge on one encrypted workspace record and expose capability
   according to Meta tasks, not according to connection method.
 - The Meta application and Render environment are configured. Facebook Login
-  URLs now include the Business Login configuration id, and the frontend
-  explains unconfigured-provider and unapproved-workspace failures.
+  URLs include the Business Login configuration id, and the frontend explains
+  provider or authorization failures without inventing another approval step.
 - Public self-signup is disabled and absent from the contract. New Clients use
   the reviewed pilot request and one-time owner setup link; sign-in routes new
   visitors back to Request access.
-- The maintained Platform Admin demo account may connect its own sandbox for
-  controlled Meta proof. Ordinary sandbox Clients remain behind approval.
+- Approved Clients may connect an authorized Facebook Page directly from their
+  workspace. Sample-data status is not a Page-connection authorization gate.
 - Moderation is a standard compact data table with server-side filters, source
   post/caption/type, stable pagination, and a complete comment review panel.
 - Source and parent context are populated for seeded prototype conversations.
@@ -30,13 +30,13 @@ model remains future work; the current disclosed engine is PatternMatcher v0.1.
 
 ## Evidence
 
-- All 89 backend tests pass against PostgreSQL, including Page Connection,
-  invite-only account creation, demo-admin exception, ordinary sandbox denial,
-  credential protection, comment context, workspace isolation, and OpenAPI.
-- The approved-workspace guard fails its test when deleted and passes when
-  restored.
-- All 35 frontend unit tests, strict TypeScript, lint without errors, build, and
-  24 Playwright tests with one intentional skip pass.
+- All 77 backend tests pass against PostgreSQL, including direct authenticated
+  Client Page Connection, invite-only account creation, credential protection,
+  comment context, workspace isolation, and OpenAPI.
+- The direct-connection and removed-contract tests failed before the obsolete
+  approval gate/routes were removed and pass afterward.
+- All 34 frontend unit tests, strict TypeScript, lint without errors, production
+  build, and 24 Playwright tests with one intentional skip pass.
 - The configuration-aware backend and frontend are live. A successful Meta
   consent callback has not yet been observed, so Page discovery,
   synchronization, and provider Actions remain explicitly unverified.

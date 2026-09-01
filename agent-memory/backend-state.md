@@ -17,9 +17,9 @@ semantically, public signup is absent, and anonymous OAuth starts return `401`.
 - Public pilot requests, Platform Administrator decisions, seven-day one-time
   owner setup links, and provider-neutral SMTP with audited `MANUAL_REQUIRED`
   fallback.
-- Public email signup is disabled and hidden from OpenAPI. The maintained
-  Platform Admin demo account may connect its own sandbox; ordinary sandbox
-  accounts retain the `403` Page-approval boundary.
+- Public email signup is disabled and hidden from OpenAPI. After reviewed
+  onboarding, any authenticated Client workspace may start Facebook
+  authorization; sample-data status adds no second approval boundary.
 - PatternMatcher behind the `Classifier` protocol with severity and target,
   independent confidence, abstention, version, and surfaced reason.
 - Moderation list with server-side query, severity, target, surfaced-reason,
@@ -49,13 +49,11 @@ src/kcms/
 
 ## Verification
 
-All 89 current tests pass against PostgreSQL. Page Connection tests prove
-session enforcement, approved-workspace gating, failed token validation,
+All 77 current tests pass against PostgreSQL. Page Connection tests prove
+session enforcement, direct Client OAuth start, failed token validation,
 workspace-scoped OAuth state, single use, encrypted storage, non-disclosure, and
-disconnect. The public-signup guard was mutation-tested: deleting it made its
-boundary test fail; restoring it returned the suite to green. The demo-admin
-exception and ordinary-sandbox denial are both regression tested. Fernet
-round-trip and tamper rejection are also tested.
+disconnect. Contract tests prove the removed Page-approval API cannot return to
+OpenAPI. Fernet round-trip and tamper rejection are also tested.
 
 ## Environment
 

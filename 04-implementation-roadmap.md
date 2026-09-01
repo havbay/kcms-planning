@@ -86,7 +86,7 @@ access request and receive a safe success response.
 
 - [ ] Approve landing and request-access references in English and Khmer,
   including validation, submitting, unavailable, retry, and success states.
-- [ ] Define POST /api/v1/access-requests in the backend-owned OpenAPI artifact.
+- [ ] Define POST /api/v1/pilot-requests in the backend-owned OpenAPI artifact.
 - [ ] Implement and test the frontend workflow first using contract-faithful
   network interception outside production modules.
 - [ ] Implement backend normalization, duplicate-safe behavior, rate limiting,

@@ -20,9 +20,9 @@ Meta authorization is configured but has not yet completed a real consent callba
 - Page Connection: **Continue with Facebook** is recommended; an advanced Page
   access-token disclosure is available for assisted setup. Loading, provider
   error, Page choice, connected, capability warning, and disconnect states are
-  explicit. A failed start explains whether Meta is unconfigured (`503`) or, for
-  an ordinary sandbox, opens the Page-connection approval request and pending
-  state. The frontend never receives a stored token.
+  explicit. A failed start explains whether Meta is unconfigured (`503`) or
+  reports a general authorization failure. It never opens a second KCMS
+  approval request. The frontend never receives a stored token.
 - Moderate: compact server-paginated table with search, review status, severity,
   target, surfacing reason, sort, source-post caption/type, and deterministic
   pagination. Selecting a row opens the complete context/verdict panel. Actions
@@ -30,7 +30,8 @@ Meta authorization is configured but has not yet completed a real consent callba
 - Application shell: compact desktop sidebar and a narrow-screen top shell with
   horizontally scrollable navigation. Tables scroll inside their own container;
   comment detail becomes a full-screen mobile panel.
-- Platform Administration remains limited to request review.
+- Platform Administration remains limited to initial pilot-access review; the
+  obsolete Page-connections queue is removed.
 
 ## Runtime
 
@@ -40,11 +41,8 @@ Playwright. API types are generated from the backend-owned OpenAPI artifact with
 
 ## Verification
 
-The current slice passes 35 Vitest tests, strict TypeScript, ESLint with no
-errors, the Vite production build, and 24 Playwright tests with one intentional
-skip. Browser inspection covered desktop and phone widths in the real local app:
-no page-level horizontal overflow, 10 moderation rows per page, an internal
-table scrollbar, and a full-width mobile comment panel.
+The current slice passes 34 Vitest tests, strict TypeScript, ESLint with no
+errors, the production build, and 24 Playwright tests with one intentional skip.
 
 ## Copy boundary
 

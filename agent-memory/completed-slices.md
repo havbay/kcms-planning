@@ -38,13 +38,13 @@ running backend and persistence, and its gates pass.
   demo accounts retain isolated sandboxes with seeded comments.
 - Cross-workspace access returns 404 rather than 403.
 
-## Part 5 — Page connection requests
+## Part 5 — Direct Client Page connection
 
-- Client request form with states for pending, approved and declined.
-- Platform Administration review with approve and decline-with-reason.
-- Administration responses provably carry no comment content.
-- The maintained Platform Admin demo account may connect its own sandbox for
-  controlled Meta proof; ordinary sandbox accounts remain denied.
+- Reviewed pilot onboarding is the only KCMS approval boundary.
+- An authenticated Client may authorize and select one of its own Meta Pages.
+- Facebook Login and advanced Page-token setup converge on one encrypted record.
+- The obsolete Client Page-request form and Platform Operations connection queue
+  were removed from both the product and OpenAPI contract.
 
 ## Part 6 — Team and settings
 
