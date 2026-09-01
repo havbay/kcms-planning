@@ -5,22 +5,24 @@
 **Live:** https://kcms-frontend.vercel.app
 
 **Status:** Onboarding, Page Connection, and moderation depth are deployed from
-`main` at commit `be79387`. The production JavaScript asset was checked for the
-Facebook connection methods and explicit `503`/`403` guidance. Live Meta
-authorization is configured but has not yet completed a real consent callback.
+`main` at commit `a2c6d44`. The production JavaScript asset was checked for the
+reviewed-access link, approval-request outcome, and demo-admin guidance. Live
+Meta authorization is configured but has not yet completed a real consent callback.
 
 ## Implemented
 
 - Bilingual public landing page, service overview, FAQ, early-access request,
   invitation setup, email/password sign-in, optional Telegram Login Widget,
   route protection, and sign-out.
+- Sign-in exposes no public Create account path. New visitors go to Request
+  access; approved owners create credentials only through a one-time setup link.
 - Client workspace: Overview, Moderate, Page Connection, Team, and Settings.
 - Page Connection: **Continue with Facebook** is recommended; an advanced Page
   access-token disclosure is available for assisted setup. Loading, provider
   error, Page choice, connected, capability warning, and disconnect states are
-  explicit. A failed start explains whether Meta is unconfigured (`503`) or the
-  workspace still needs approval (`403`). The frontend never receives a stored
-  token.
+  explicit. A failed start explains whether Meta is unconfigured (`503`) or, for
+  an ordinary sandbox, opens the Page-connection approval request and pending
+  state. The frontend never receives a stored token.
 - Moderate: compact server-paginated table with search, review status, severity,
   target, surfacing reason, sort, source-post caption/type, and deterministic
   pagination. Selecting a row opens the complete context/verdict panel. Actions
@@ -38,7 +40,7 @@ Playwright. API types are generated from the backend-owned OpenAPI artifact with
 
 ## Verification
 
-The current slice passes 33 Vitest tests, strict TypeScript, ESLint with no
+The current slice passes 35 Vitest tests, strict TypeScript, ESLint with no
 errors, the Vite production build, and 24 Playwright tests with one intentional
 skip. Browser inspection covered desktop and phone widths in the real local app:
 no page-level horizontal overflow, 10 moderation rows per page, an internal

@@ -18,8 +18,11 @@ running backend and persistence, and its gates pass.
 
 ## Part 2 — Authentication
 
-- Email sign-up and sign-in with scrypt; Telegram Login Widget implemented and
-  deployed, dormant until a bot token is configured.
+- Reviewed pilot request, Platform Administrator decision, single-use owner
+  setup link, and email/password sign-in with scrypt. Public self-signup is
+  disabled and absent from the OpenAPI contract.
+- Telegram Login Widget is implemented and dormant until a bot token and an
+  invitation-safe account-linking policy are configured.
 - Bearer-token sessions, stored only as a hash.
 - Route guard, sign-out, and per-field accessible validation.
 
@@ -31,7 +34,8 @@ running backend and persistence, and its gates pass.
 
 ## Part 4 — Workspaces
 
-- Every account owns an isolated workspace with its own seeded comments.
+- Approved invited owners enter an isolated Client workspace. Existing internal
+  demo accounts retain isolated sandboxes with seeded comments.
 - Cross-workspace access returns 404 rather than 403.
 
 ## Part 5 — Page connection requests
@@ -39,6 +43,8 @@ running backend and persistence, and its gates pass.
 - Client request form with states for pending, approved and declined.
 - Platform Administration review with approve and decline-with-reason.
 - Administration responses provably carry no comment content.
+- The maintained Platform Admin demo account may connect its own sandbox for
+  controlled Meta proof; ordinary sandbox accounts remain denied.
 
 ## Part 6 — Team and settings
 
@@ -54,5 +60,6 @@ running backend and persistence, and its gates pass.
 
 ## Verification at the time of writing
 
-68 backend tests, 19 frontend unit tests, 22 Playwright tests. Strict TypeScript,
+89 backend tests, 35 frontend unit tests, 24 passing Playwright tests with one
+intentional skip. Strict TypeScript,
 ESLint, Vite production build, ruff. Security guards mutation-tested.

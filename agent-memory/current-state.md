@@ -17,6 +17,11 @@ model remains future work; the current disclosed engine is PatternMatcher v0.1.
 - The Meta application and Render environment are configured. Facebook Login
   URLs now include the Business Login configuration id, and the frontend
   explains unconfigured-provider and unapproved-workspace failures.
+- Public self-signup is disabled and absent from the contract. New Clients use
+  the reviewed pilot request and one-time owner setup link; sign-in routes new
+  visitors back to Request access.
+- The maintained Platform Admin demo account may connect its own sandbox for
+  controlled Meta proof. Ordinary sandbox Clients remain behind approval.
 - Moderation is a standard compact data table with server-side filters, source
   post/caption/type, stable pagination, and a complete comment review panel.
 - Source and parent context are populated for seeded prototype conversations.
@@ -25,11 +30,13 @@ model remains future work; the current disclosed engine is PatternMatcher v0.1.
 
 ## Evidence
 
-- Backend Page Connection, credential, comment filter/context, authorization,
-  workspace isolation, and OpenAPI tests pass against PostgreSQL.
+- All 89 backend tests pass against PostgreSQL, including Page Connection,
+  invite-only account creation, demo-admin exception, ordinary sandbox denial,
+  credential protection, comment context, workspace isolation, and OpenAPI.
 - The approved-workspace guard fails its test when deleted and passes when
   restored.
-- Frontend unit, type, lint, build, Playwright, and browser layout checks pass.
+- All 35 frontend unit tests, strict TypeScript, lint without errors, build, and
+  24 Playwright tests with one intentional skip pass.
 - The configuration-aware backend and frontend are live. A successful Meta
   consent callback has not yet been observed, so Page discovery,
   synchronization, and provider Actions remain explicitly unverified.
@@ -38,8 +45,8 @@ model remains future work; the current disclosed engine is PatternMatcher v0.1.
 
 | Repository | Active branch | Publication state |
 |---|---|---|
-| `kcms-frontend` | `main` | `be79387`, deployed on Vercel |
-| `kcms-backend` | `main` | `25f5dbc`, deployed on Render |
+| `kcms-frontend` | `main` | `a2c6d44`, deployed on Vercel |
+| `kcms-backend` | `main` | `4b5addb`, deployed on Render |
 | `kcms-planning` | `main` | this state update pending push |
 
 KCMS v1 remains unchanged and is reference evidence only.

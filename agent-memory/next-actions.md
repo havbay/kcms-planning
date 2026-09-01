@@ -4,9 +4,10 @@ Ordered by dependency and value. No dates.
 
 ## Prove Facebook end to end
 
-1. Approve the Client workspace if needed, then test **Continue with Facebook**
-   using an app-role account and a Page it administers. Keep the manual
-   Page-token method as the assisted fallback.
+1. Sign in with the maintained demo Platform Admin account and test **Continue
+   with Facebook** using a Page the same app-role account administers. The demo
+   workspace no longer needs Client approval; ordinary sandboxes still do. Keep
+   the manual Page-token method as the assisted fallback.
 2. Implement the `CommentSource` synchronization adapter and webhook boundary.
 3. Run the agreed proof: publish a video, add a Khmer comment, synchronize it,
    surface it through PatternMatcher, hide/unhide it in KCMS, and verify the

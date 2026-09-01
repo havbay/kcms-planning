@@ -215,3 +215,16 @@ token's tasks and permissions, not by how KCMS obtained it.
 The manual flow accepts a Page access token, validates it with the provider, and
 derives the Page identity rather than trusting a typed Page name. Stored tokens
 never return to the browser. See ADR 0005.
+
+## D-025: Reviewed Account Setup And A Narrow Demo Connection Exception
+
+D-018 is superseded. Public self-signup is disabled. A visitor requests pilot
+access, a Platform Administrator reviews the request, and an approved owner
+creates credentials through a seven-day, single-use setup link. The sign-in
+screen links new visitors to Request access and exposes no Create account path.
+
+The maintained Platform Admin demo account may connect its own sandbox workspace
+to prove the live Meta flow before a Client is onboarded. This exception is
+derived from the deployment Platform Admin allowlist, cannot be self-assigned,
+and does not apply to ordinary sandbox accounts. Those accounts remain denied
+until the reviewed Page-connection request is approved.

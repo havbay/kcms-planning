@@ -5,9 +5,9 @@
 **Live:** https://kcms-backend.onrender.com
 
 **Status:** Pilot onboarding, optional SMTP, Page Connection, and moderation
-depth are deployed from `main` at commit `25f5dbc`. Render reports that deploy
-live, health is `READY/REACHABLE`, the canonical OpenAPI contract matches local,
-and anonymous OAuth start requests return `401`.
+depth are deployed from `main` at commit `4b5addb`. Render reports that deploy
+live, health is `READY/REACHABLE`, the OpenAPI contract matches local
+semantically, public signup is absent, and anonymous OAuth starts return `401`.
 
 ## Implemented
 
@@ -17,6 +17,9 @@ and anonymous OAuth start requests return `401`.
 - Public pilot requests, Platform Administrator decisions, seven-day one-time
   owner setup links, and provider-neutral SMTP with audited `MANUAL_REQUIRED`
   fallback.
+- Public email signup is disabled and hidden from OpenAPI. The maintained
+  Platform Admin demo account may connect its own sandbox; ordinary sandbox
+  accounts retain the `403` Page-approval boundary.
 - PatternMatcher behind the `Classifier` protocol with severity and target,
   independent confidence, abstention, version, and surfaced reason.
 - Moderation list with server-side query, severity, target, surfaced-reason,
@@ -46,12 +49,13 @@ src/kcms/
 
 ## Verification
 
-The current local suite passes against PostgreSQL. Page Connection tests prove
+All 89 current tests pass against PostgreSQL. Page Connection tests prove
 session enforcement, approved-workspace gating, failed token validation,
 workspace-scoped OAuth state, single use, encrypted storage, non-disclosure, and
-disconnect. The approved-workspace guard was mutation-tested: deleting it made
-the denial test return `201` instead of `403`; restoring it returned the suite to
-green. Fernet round-trip and tamper rejection are also tested.
+disconnect. The public-signup guard was mutation-tested: deleting it made its
+boundary test fail; restoring it returned the suite to green. The demo-admin
+exception and ordinary-sandbox denial are both regression tested. Fernet
+round-trip and tamper rejection are also tested.
 
 ## Environment
 

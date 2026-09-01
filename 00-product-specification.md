@@ -29,15 +29,18 @@ client-facing MVP role.
 
 ## Canonical Customer Journey
 
-Superseded in part by D-018: sign-up is open, and capability is gated.
+Updated by D-025: account creation is reviewed and invitation-based. The
+maintained Platform Admin demo account is the only sandbox exception used for
+live integration proof.
 
-1. A visitor creates an account with email or Telegram.
-2. The account receives an isolated sandbox workspace containing sample Khmer
-   comments, so the product can be evaluated before any Page is connected.
-3. To connect a real Facebook Page, the Client submits a request for access.
-4. A Platform Administrator reviews the request and lifts the sandbox
-   restriction on that workspace.
-5. The Client connects a Facebook Page and may invite trusted teammates.
+1. A visitor submits a pilot-access request with its organization and Page.
+2. A Platform Administrator approves or declines the request.
+3. On approval, the first Client owner receives a single-use setup link and
+   creates its own password; KCMS never sends a password.
+4. The Client signs in, connects a Facebook Page, and may invite trusted
+   teammates.
+5. The maintained Platform Admin demo account may connect its own sandbox Page
+   for controlled provider testing. Ordinary sandbox accounts remain gated.
 6. Ingestion receives comments from the connected Page.
 7. The disclosed pattern-matching classifier produces a versioned Verdict.
 8. Routing prioritizes comments and surfaces uncertain or concerning comments for

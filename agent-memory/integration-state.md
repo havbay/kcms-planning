@@ -13,7 +13,7 @@ byte equality, and the frontend vendors that artifact and regenerates
 | Database | Render PostgreSQL 16, Singapore |
 
 The onboarding, Page Connection, and expanded moderation contract are deployed.
-Frontend commit `be79387` is live on Vercel and backend commit `25f5dbc` is live
+Frontend commit `a2c6d44` is live on Vercel and backend commit `4b5addb` is live
 on Render.
 
 ## Verified contract boundary
@@ -35,12 +35,16 @@ on Render.
   connection and moderation fields, and protected endpoints reject anonymous
   requests with `401`.
 - The production JavaScript contains the explicit Meta configuration and
-  workspace-approval messages. Render reports no error logs for the new release.
+  reviewed-access and approval-request states. Render and Vercel report no error
+  logs for the new release.
+- Public signup is absent from the live OpenAPI contract. The maintained demo
+  Platform Admin can begin Meta connection from its sandbox; ordinary sandboxes
+  remain denied and can submit the approval request.
 
 ## Live evidence still required
 
-1. Approve the KCMS workspace if it is still sandboxed, then authorize a Page
-   the app-role account administers and confirm Page discovery/tasks.
+1. Sign in with the maintained demo Platform Admin account, authorize a Page the
+   same app-role account administers, and confirm Page discovery/tasks.
 2. Synchronize a controlled video post and its comment.
 3. Confirm pattern matching surfaces the synchronized comment.
 4. Hide and unhide through KCMS, then verify the result on Facebook.
