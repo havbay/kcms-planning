@@ -80,3 +80,24 @@ management, and Page webhook metadata management.
 Comment synchronization, webhook ingestion, provider-side hide/unhide, full
 moderation history, wider Platform Administration, quality metrics with valid
 denominators, and rate limiting.
+
+
+## Facebook comment ingestion and action mirroring
+
+`POST /api/v1/facebook/sync` reads comments on the connected Page's recent
+posts, classifies each new one through `PatternMatcher`, and stores it in the
+workspace. The provider's own comment id is the primary key, so re-syncing is
+idempotent: an imported comment keeps its verdict, actions and corrections.
+
+`record_action` mirrors HIDE and UNHIDE to Facebook when the comment's
+`page_id` matches the workspace's connected Page. The Action row and the Graph
+call share one transaction — if Meta refuses, the row rolls back and the caller
+sees 502, because an Action records what actually happened to the comment.
+Seeded sample comments carry the sandbox Page id, so they never send a hide for
+an id Facebook does not know.
+
+`get_meta_client` requires only `META_GRAPH_VERSION`. Facebook Login checks its
+own settings when used, so a Page token works without an OAuth app.
+
+Tests: 86. `tests/test_comment_sync.py` covers import, idempotent re-sync,
+mirroring, the seeded-comment exemption, and the rollback on refusal.

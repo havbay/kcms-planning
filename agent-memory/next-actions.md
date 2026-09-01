@@ -40,3 +40,24 @@ Ordered by dependency and value. No dates.
 Telegram alerts, Messenger/Instagram, suggested replies, buying-intent labels,
 and controlled automatic hiding. Generic sales-performance tracking remains out
 of scope.
+
+
+## Deployment reality
+
+Neither Render nor Vercel auto-deploys. Every Render deploy in the service
+history is triggered `api` or `manual`, never `commit`, despite `autoDeploy:
+yes`. Vercel likewise sat on an old bundle across two pushes. Both are
+downstream of the locked GitHub billing account.
+
+Deploy by hand after every push:
+- backend: Render MCP `trigger_deploy` on `srv-daa8uepf2nfc739j4eb0`
+- frontend: `npx vercel --prod --yes` from `kcms-frontend` (CLI is authenticated)
+
+Verify by fingerprint, not by timestamp: compare the live bundle name against
+`dist/assets/index-*.js`, and the live `/openapi.json` against the committed
+artifact. A rolling deploy will otherwise answer from the old instance.
+
+## Required for the Page demo
+
+`META_GRAPH_VERSION` and `INTEGRATION_ENCRYPTION_KEY` must be set on Render or
+connecting a Page returns 503.
