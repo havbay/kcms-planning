@@ -5,9 +5,9 @@
 **Live:** https://kcms-backend.onrender.com
 
 **Status:** Pilot onboarding, optional SMTP, Page Connection, and moderation
-depth are deployed from `main` at commit `b99f780`. Render reports that deploy
-live, health is `READY/REACHABLE`, the new OpenAPI operations are present, and
-anonymous Page/comment requests return `401`.
+depth are deployed from `main` at commit `25f5dbc`. Render reports that deploy
+live, health is `READY/REACHABLE`, the canonical OpenAPI contract matches local,
+and anonymous OAuth start requests return `401`.
 
 ## Implemented
 
@@ -57,16 +57,21 @@ green. Fernet round-trip and tamper rejection are also tested.
 
 In addition to database, CORS, admin, Telegram, and optional SMTP configuration,
 Page Connection uses `META_GRAPH_VERSION`, `META_APP_ID`, `META_APP_SECRET`,
-`META_OAUTH_REDIRECT_URI`, `META_OAUTH_SCOPES`, and
+`META_LOGIN_CONFIG_ID`, `META_OAUTH_REDIRECT_URI`, `META_OAUTH_SCOPES`, and
 `INTEGRATION_ENCRYPTION_KEY`. Missing Meta or encryption configuration fails the
-integration closed with `503`.
+integration closed with `503`. Facebook authorization URLs include the
+configured Facebook Login for Business `config_id`; the default permission set
+includes Page discovery, engagement reads, user-content reads, engagement
+management, and Page webhook metadata management.
 
 ## Operational notes
 
 - Render's GitHub webhook previously did not fire; verify a deploy's `finishedAt`
   rather than assuming a push is live.
 - cron-job.org pings `/api/v1/health` for the free instance.
-- No live Meta request has been made in this slice.
+- The Meta application and Render variables have been configured by the owner.
+  The configuration-aware release is live with no Render error logs, but a
+  successful authorization response has not yet been observed by KCMS.
 
 ## Not yet implemented
 

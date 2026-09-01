@@ -5,9 +5,9 @@
 **Live:** https://kcms-frontend.vercel.app
 
 **Status:** Onboarding, Page Connection, and moderation depth are deployed from
-`main` at commit `516996f`. The production JavaScript asset was checked for the
-new Facebook connection methods, search, and source-post interface. Live Meta
-authorization remains unavailable until provider configuration is supplied.
+`main` at commit `be79387`. The production JavaScript asset was checked for the
+Facebook connection methods and explicit `503`/`403` guidance. Live Meta
+authorization is configured but has not yet completed a real consent callback.
 
 ## Implemented
 
@@ -18,7 +18,9 @@ authorization remains unavailable until provider configuration is supplied.
 - Page Connection: **Continue with Facebook** is recommended; an advanced Page
   access-token disclosure is available for assisted setup. Loading, provider
   error, Page choice, connected, capability warning, and disconnect states are
-  explicit. The frontend never receives a stored token.
+  explicit. A failed start explains whether Meta is unconfigured (`503`) or the
+  workspace still needs approval (`403`). The frontend never receives a stored
+  token.
 - Moderate: compact server-paginated table with search, review status, severity,
   target, surfacing reason, sort, source-post caption/type, and deterministic
   pagination. Selecting a row opens the complete context/verdict panel. Actions
@@ -36,7 +38,7 @@ Playwright. API types are generated from the backend-owned OpenAPI artifact with
 
 ## Verification
 
-The released slice passes 31 Vitest tests, strict TypeScript, ESLint with no
+The current slice passes 33 Vitest tests, strict TypeScript, ESLint with no
 errors, the Vite production build, and 24 Playwright tests with one intentional
 skip. Browser inspection covered desktop and phone widths in the real local app:
 no page-level horizontal overflow, 10 moderation rows per page, an internal
