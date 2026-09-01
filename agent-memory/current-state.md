@@ -1,138 +1,51 @@
 # Current State
 
-**Updated:** 2026-08-31
+**Updated:** 2026-09-01
+**Active part:** Client Page Connection and moderation depth
 
-**Active part:** Part 8 - Depth in the moderation workflow
+KCMS V2 is a working bilingual full-stack prototype. The public experience,
+onboarding, identity, isolated Client workspace, overview, moderation Actions,
+Corrections, team, settings, and request administration exist. The trained Khmer
+model remains future work; the current disclosed engine is PatternMatcher v0.1.
 
-**Part status:** The full stack is live. The client dashboard is complete with no
-placeholder sections: Overview, Moderate, Page connection, Team and Settings all
-run against a deployed backend and PostgreSQL. Platform Administration exists for
-access requests only. Remaining work is depth in the moderation workflow, the
-rest of Platform Administration, and real Facebook ingestion.
+## Current local slice
 
-**Pending review:** Public pilot requests, administrator review, optional SMTP
-delivery, one-time client setup and the expanded landing page are complete in the
-local feature branches. They are deliberately not described as live yet.
+- Client Page Connection now uses a real product workflow rather than a request
+  form: **Continue with Facebook** or an advanced **Page access token**.
+- Both methods converge on one encrypted workspace record and expose capability
+  according to Meta tasks, not according to connection method.
+- Moderation is a standard compact data table with server-side filters, source
+  post/caption/type, stable pagination, and a complete comment review panel.
+- Source and parent context are populated for seeded prototype conversations.
+- Actions and Corrections remain separate. Current KCMS Actions are stored
+  locally; provider-side hide/unhide is not yet implemented.
 
-## Repository State
+## Evidence
 
-All three repositories are on GitHub under `havbay` and are pushed.
+- Backend Page Connection, credential, comment filter/context, authorization,
+  workspace isolation, and OpenAPI tests pass against PostgreSQL.
+- The approved-workspace guard fails its test when deleted and passes when
+  restored.
+- Frontend unit, type, lint, build, Playwright, and browser layout checks pass.
+- No live Meta request was made, so OAuth, synchronization, and provider Actions
+  remain explicitly unverified.
 
-| Repository | Branch | Live |
+## Repository boundary
+
+| Repository | Active branch | Publication state |
 |---|---|---|
-| `kcms-frontend` | `main` | https://kcms-frontend.vercel.app |
-| `kcms-backend` | `main` | https://kcms-backend.onrender.com |
-| `kcms-planning` | `main` | — |
+| `kcms-frontend` | `feature/landing-header-hero` | local changes, not pushed/deployed |
+| `kcms-backend` | `feature/moderation-slice` | local changes, not pushed/deployed |
+| `kcms-planning` | `feature/moderation-slice` | local changes, not pushed |
 
-- `kcms-frontend`: deployed on Vercel. `vercel deploy --prod` publishes.
-- `kcms-backend`: deployed on Render (Singapore, free plan) with a free
-  PostgreSQL 16 instance. `autoDeploy` is enabled but the GitHub webhook is not
-  firing, so deploys are currently triggered manually.
-- KCMS v1: unchanged. Reference evidence, not the V2 implementation base.
+KCMS v1 remains unchanged and is reference evidence only.
 
-## What Is Implemented
+## Remaining work
 
-**Public**
-- Bilingual landing page: hero and Comment Pathway, How KCMS works, Built for
-  Khmer, Human control, Early access, footer.
-- Sticky header, mobile navigation drawer, English/Khmer switching throughout.
-- `/request-access` is a real bilingual pilot form. `/contact`, `/privacy` and
-  unknown routes render notice pages, never a blank screen.
-
-**Authentication**
-- Email and password sign-up and sign-in with scrypt hashing.
-- Telegram Login Widget implemented and deployed; it stays hidden until
-  `TELEGRAM_BOT_TOKEN` and `TELEGRAM_BOT_USERNAME` are configured.
-- Sessions are bearer tokens, stored only as a SHA-256 hash.
-- Identity is modelled per provider, so an account can hold both.
-
-**Client workspace**
-- Every account owns an isolated sandbox workspace, seeded with its own copy of
-  the sample Khmer comments.
-- Overview: comments processed, need review, reviewed, pending, a surfaced-reason
-  breakdown, and moderation outcomes. Every figure derives from real data.
-- Moderate: a paginated table with severity, target, why each comment surfaced,
-  Leave/Hide/Unhide inline, and an expandable detail row carrying confidences,
-  model version, rationale and correction.
-- Corrections: a human states what the labels should be, without acting on the
-  comment.
-- Page connection: a sandbox workspace requests a real Page; a Platform
-  Administrator approves or declines with a reason.
-- Team: membership with owner and member roles, and single-use invitation links.
-- Settings: workspace rename (owner only) and personal display name (anyone).
-
-**Platform Administration**
-- Access requests: list, approve, decline with a reason. The response provably
-  carries no comment content at any nesting level.
-- Local pending slice: separate public pilot queue, approval/decline, delivery
-  state and manual setup-link fallback.
-
-**Backend**
-- Health, paginated comments, a database-computed workspace summary, actions,
-  corrections, access requests, administration decisions, team, settings, and
-  the `/api/v1/auth/*` surface. See `backend-state.md`.
-- Deterministic OpenAPI artifact with a byte-equality drift test.
-- Forward-only SQL migrations applied at startup.
-
-## Confirmed Evidence
-
-- `runtime-confirmed-local`: 75 backend tests pass, including integration tests against
-  real PostgreSQL.
-- `runtime-confirmed-local`: 26 frontend unit tests and 24 Playwright tests pass
-  with one intentional skip, with strict TypeScript, ESLint, and the Vite
-  production build.
-- `runtime-confirmed`: security guards are mutation-tested. Deleting the
-  platform-admin guard, the comment-content leak check, the owner-only guard,
-  invitation single-use, or last-owner protection each fails a test.
-- `runtime-confirmed`: the work list paginates with a deterministic sort. Without
-  a `comment_id` tiebreaker, rows sharing a timestamp appeared on more than one
-  page and others never appeared at all.
-- `runtime-confirmed`: the Overview summary is computed in the database, not
-  derived from a page of results, which would have under-reported once the list
-  was paginated.
-- `runtime-confirmed`: workspace isolation verified in production. Two fresh
-  accounts receive disjoint comment ids; neither sees the other's actions; acting
-  on another workspace's comment id returns 404, not 403, so existence is not
-  disclosed.
-- `runtime-confirmed`: hiding a comment writes no Correction, and submitting a
-  Correction does not act on the comment. Both are asserted against real
-  PostgreSQL.
-- `runtime-confirmed`: institution-directed criticism never routes to `triage`.
-  A substring collision (`វា` inside `សេវា`) previously mislabelled service
-  complaints as person-directed; it is fixed and regression-tested.
-- `runtime-confirmed`: unrecognised Khmer abstains as `novel_language` rather
-  than being cleared as safe.
-- `runtime-confirmed`: moderation endpoints return 401 without a session, and
-  actions are attributed to the signed-in person.
-- `source-confirmed`: two visible authenticated roles remain Client and Platform
-  Administrator.
-- `source-confirmed`: the classifier seam is in place; swapping the pattern
-  matcher for a trained model changes one line.
-
-## Remaining Preconditions And External Work
-
-- The Render GitHub webhook is not firing; pushes to `main` do not auto-deploy
-  and deploys are triggered manually through the API.
-- The GitHub account is billing-locked, so GitHub Actions cannot run. The
-  keep-warm workflow was removed in favour of an external ping.
-- cron-job.org pings `/api/v1/health` to keep the free instance warm.
-- `TELEGRAM_BOT_TOKEN` and `TELEGRAM_BOT_USERNAME` are unset, so Telegram
-  sign-in is dormant.
-- Real Facebook ingestion is untested.
-- Transactional email is not configured. The new flow currently uses its audited
-  manual-link fallback until a sender domain and SMTP credentials are supplied.
-
-## Not Yet Implemented
-
-- Comment context. `post_text` and `parent_text` exist in `comment_content` but
-  nothing populates them.
-- Work list filtering and full moderation history.
-- Platform Administration beyond access requests: workspaces, users, fleet
-  health, audit log.
-- Page Policy, and metrics with denominators. False Suppression Rate and Missed
-  Harm Rate do not exist.
-- A replaceable ingestion source interface. The classifier seam exists; the
-  ingestion port does not. Real Facebook ingestion is untested.
-- A workspace switcher. Someone who belongs to two workspaces cannot return to
-  their sandbox.
-- Workspace, user, fleet-health and audit-log administration views do not exist.
+- Controlled live Meta authorization, Page discovery, synchronization, and
+  reversible hide/unhide proof.
+- Full moderation history and provider event reconciliation.
+- Broader Platform Administration, workspace switching, and valid quality
+  metrics.
+- Authorized manual Khmer dataset, offline training/evaluation, and a versioned
+  model deployment after it beats the baseline safely.

@@ -1,73 +1,44 @@
 # Integration State
 
-**Contract:** The backend generates `openapi.json` from the application factory.
-A test regenerates it and compares bytes, so drift fails deterministically.
+The backend-generated `openapi.json` is authoritative. A backend test checks
+byte equality, and the frontend vendors that artifact and regenerates
+`src/api/schema.d.ts`; production frontend modules do not import fixtures.
 
-**Generated frontend client:** `kcms-frontend/src/api/schema.d.ts`, produced by
-`npm run api:generate`, which copies the backend artifact and runs
-`openapi-typescript`. The file is committed and never hand-edited.
+## Environments
 
-`openapi-typescript` is invoked through `npx` rather than installed as a
-dependency: it peers on TypeScript 5 while the frontend uses 6. The generated
-types are committed, so no build needs the tool.
-
-## Live environments
-
-| | URL |
+| Component | URL |
 |---|---|
 | Frontend | https://kcms-frontend.vercel.app |
 | Backend | https://kcms-backend.onrender.com |
-| Database | Render PostgreSQL 16, Singapore, free plan |
+| Database | Render PostgreSQL 16, Singapore |
 
-Both halves are live and talking to each other. `CORS_ORIGINS` on the backend
-allows the Vercel origin.
+The deployed baseline is live. The onboarding, Page Connection, and expanded
+moderation contract are currently local only.
 
-The pilot-onboarding contract is currently verified only in the local stack. It
-must not be counted as production evidence until the frontend and backend
-branches are pushed, Render finishes the new deploy, and the Vercel flow is
-retested against it.
+## Local verified boundary
 
-## Verified end to end in production
+- Authenticated Client Page Connection supports Facebook authorization and an
+  advanced Page token. Controlled Meta test doubles verify both acquisition
+  paths without making a live provider request.
+- Both paths produce the same public connection representation and encrypted
+  backend record; credentials never enter API responses.
+- Comments expose source post/caption/type and optional parent context and accept
+  server-side search/filter/sort/pagination parameters.
+- The frontend consumes the regenerated contract and renders connection,
+  compact moderation, context panel, Actions, and Corrections.
+- Desktop and mobile browser checks show no page-level overflow.
 
-- Sign-up creates an isolated workspace seeded with its own comments.
-- The work list loads from PostgreSQL and paginates.
-- Actions persist and are attributed to the signed-in person by name.
-- Corrections persist without acting on the comment.
-- Two accounts cannot see or affect each other's comments; a foreign id gives 404.
-- A non-administrator is redirected away from `/admin/requests` and receives 403
-  from the administration endpoints.
+## Live evidence still required
 
-## Local development
-
-```
-backend    uv run uvicorn kcms.app:app --reload      127.0.0.1:8000
-frontend   npm run dev                               127.0.0.1:5173
-database   docker compose up -d                      127.0.0.1:5432
-```
-
-`VITE_API_BASE_URL` selects the API. Vite loads `.env.development` **after**
-`.env.local`, so `.env.development.local` is the file that overrides in dev.
-
-CORS is port-exact: running the frontend on 5174 against a backend allowing 5173
-produces a `400` preflight, not an obvious error.
-
-## Locally verified pending slice
-
-- A visitor submits `POST /api/v1/pilot-requests` without authentication.
-- Only a Platform Administrator can list and decide pilot requests.
-- Approval creates a one-time owner setup invitation without emailing a password.
-- `/setup/:token` previews and accepts the invitation, establishes a session,
-  and rejects reused, revoked or expired links.
-- SMTP is optional; delivery state is audited and the administrative manual-link
-  fallback keeps the flow operable without a provider.
-- The updated OpenAPI artifact and generated frontend types match the boundary.
+1. Configure a Meta app, callback URL, requested Page permissions, and a separate
+   provider-credential encryption key in Render.
+2. Authorize a Page the owner administers and confirm Page discovery/tasks.
+3. Synchronize a controlled video post and its comment.
+4. Confirm pattern matching surfaces the synchronized comment.
+5. Hide and unhide through KCMS, then verify the result on Facebook.
+6. Disconnect/reconnect and prove credential-loss recovery.
 
 ## Testing seam
 
-Frontend tests intercept at the network boundary (D-016); production modules
-import no fixtures. The Playwright stub must be extended whenever an endpoint is
-added, or pages that call it render nothing and unrelated tests fail.
-
-Playwright runs six browsers in parallel and fails with
-`Object with guid ... was not bound in the connection` under machine load. That
-is resource exhaustion, not a defect; re-run with `--workers=1`.
+Frontend tests intercept at the network boundary. Backend tests replace the
+`MetaClient` protocol. Real provider behavior is not inferred from either seam.

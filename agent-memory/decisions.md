@@ -203,3 +203,15 @@ The design handoff and the contract still come first in both cases, and live
 frontend, API and persistence proof is still required before a slice completes.
 Part 1 is authorization-shaped: who is a Platform Administrator, and the rule
 that administrators cannot read customer comments.
+
+## D-024: Two Client Page-Connection Methods, One Capability Boundary
+
+The Client Page Connection screen offers **Continue with Facebook** as the
+recommended flow and **Connect with Page token** as an advanced flow. Both are
+Client capabilities and both converge on the same encrypted, workspace-scoped
+Page Connection. Their abilities are determined by the resulting Meta Page
+token's tasks and permissions, not by how KCMS obtained it.
+
+The manual flow accepts a Page access token, validates it with the provider, and
+derives the Page identity rather than trusting a typed Page name. Stored tokens
+never return to the browser. See ADR 0005.

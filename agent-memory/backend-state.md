@@ -4,100 +4,71 @@
 **Remote:** `git@github.com:havbay/kcms-backend.git`
 **Live:** https://kcms-backend.onrender.com
 
-**Status:** The previously approved stack is deployed on Render. Pilot onboarding
-and optional SMTP delivery are implemented and verified locally on
-`feature/moderation-slice`; they are not live until reviewed, pushed and deployed.
+**Status:** The production baseline is deployed on Render. Pilot onboarding,
+optional SMTP, Page Connection, and moderation-depth changes are verified only
+locally on `feature/moderation-slice` until reviewed and deployed.
 
 ## Implemented
 
-**Health** — `GET /api/v1/health` runs `SELECT 1` through the asyncpg pool.
-Returns `200 READY/REACHABLE` or `503 DEGRADED/UNREACHABLE`, never exception or
-connection detail. A failed connection does not crash startup; the reason is
-logged so a misconfigured `DATABASE_URL` is distinguishable from a missing one.
-
-**Classification** — `moderation/pattern_matcher.py` implements the `Classifier`
-Protocol. Two axes with independent confidences, abstention, and a
-`surfaced_reason` on every verdict. Model version `pattern-matching-v0.1`.
-
-**Moderation** — paginated work list, actions (`HIDE`/`LEAVE`/`UNHIDE`) and
-corrections. A workspace-wide summary is computed in the database rather than
-from a page of results.
-
-**Identity** — email with scrypt, Telegram Login Widget with HMAC verification.
-Sessions are bearer tokens stored only as a SHA-256 hash. Identity is per
-provider, so one account can hold both.
-
-**Workspaces** — every account owns an isolated workspace seeded with its own
-copy of the sample comments. Cross-workspace access returns 404, never 403.
-
-**Access requests** — a sandbox workspace requests a Page connection; a Platform
-Administrator approves or declines. Approval lifts `workspace.is_sandbox`.
-
-**Pilot onboarding** — a visitor submits a public request without creating an
-account. A Platform Administrator approves or declines it. Approval creates an
-approved workspace and a seven-day, single-use owner setup link; the invitee
-chooses their own password. Existing accounts are upgraded instead of duplicated.
-
-**Notifications** — provider-neutral email contract with an SMTP adapter. Every
-attempt is audited. When SMTP is incomplete or unavailable, approval remains
-usable through an administrative copy-link fallback marked `MANUAL_REQUIRED`.
-
-**Team** — membership with `owner`/`member`, and single-use invitation links
-that expire in seven days. Only the token hash is stored.
-
-**Settings** — workspace rename (owner only) and personal display name (anyone).
+- Database-aware health, deterministic OpenAPI, email/password and optional
+  Telegram identity, hashed bearer sessions, workspace isolation, team and
+  settings.
+- Public pilot requests, Platform Administrator decisions, seven-day one-time
+  owner setup links, and provider-neutral SMTP with audited `MANUAL_REQUIRED`
+  fallback.
+- PatternMatcher behind the `Classifier` protocol with severity and target,
+  independent confidence, abstention, version, and surfaced reason.
+- Moderation list with server-side query, severity, target, surfaced-reason,
+  review-status, sort, offset/limit, stable tie-breaker, source post/caption/type,
+  parent context, actions, Corrections, and database-computed summary.
+- One workspace-scoped Facebook Page Connection. Facebook authorization and the
+  advanced Page-token path converge on the same record. Page identity/tasks are
+  provider-derived; credentials are Fernet-encrypted, never returned, and
+  deleted on disconnect. OAuth state is hashed, scoped to user/workspace,
+  expiring, and single-use.
 
 ## Layout
 
-```
-migrations/            forward-only SQL, applied at startup, numbered 001-008
+```text
+migrations/            forward-only SQL 001-011
 src/kcms/
-├── api/               routing and transport schemas
-├── auth/              identity, sessions, security primitives
-├── access/            page connection requests
-├── pilot/             public requests and owner setup invitations
-├── notifications/     delivery contract and SMTP adapter
+├── api/               HTTP routes and transport schemas
+├── auth/              identities, sessions and security
+├── integrations/      Meta seam, encrypted credentials and Page repository
+├── moderation/        classifier seam, matcher, repository and seeds
+├── notifications/     SMTP contract and adapter
+├── pilot/             public requests and owner setup
 ├── team/              membership and invitations
-├── moderation/        classifier seam, pattern matcher, repository, seeds
-├── shared/database/   asyncpg pool and migration runner
+├── shared/database/   asyncpg pool and migrations
 └── app.py             application factory
-openapi.json           contract artifact; a test asserts byte equality
 ```
 
-## Tests
+## Verification
 
-75 pass, including integration tests against real PostgreSQL. Security guards are
-mutation-tested: each is deleted to confirm a test fails, then restored. Verified
-this way are the platform-admin guard, the comment-content leak check, the
-owner-only guard, invitation single-use, last-owner protection, and the new pilot
-request administration boundary.
+The current local suite passes against PostgreSQL. Page Connection tests prove
+session enforcement, approved-workspace gating, failed token validation,
+workspace-scoped OAuth state, single use, encrypted storage, non-disclosure, and
+disconnect. The approved-workspace guard was mutation-tested: deleting it made
+the denial test return `201` instead of `403`; restoring it returned the suite to
+green. Fernet round-trip and tamper rejection are also tested.
 
 ## Environment
 
-| Variable | Purpose |
-|---|---|
-| `DATABASE_URL` | Set from the Render Postgres internal URL |
-| `CORS_ORIGINS` | Comma-separated; port-exact, a mismatch gives a 400 preflight |
-| `PLATFORM_ADMIN_EMAILS` | Grants Platform Administration at sign-in; reconciled every sign-in so removal revokes |
-| `TELEGRAM_BOT_TOKEN` / `TELEGRAM_BOT_USERNAME` | Unset, so Telegram sign-in stays hidden |
-| `PUBLIC_FRONTEND_URL` | Base URL used to generate setup and sign-in links |
-| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` | Optional transactional-email connection |
-| `SMTP_FROM_EMAIL`, `SMTP_FROM_NAME` | Verified sender identity; required to enable SMTP |
+In addition to database, CORS, admin, Telegram, and optional SMTP configuration,
+Page Connection uses `META_GRAPH_VERSION`, `META_APP_ID`, `META_APP_SECRET`,
+`META_OAUTH_REDIRECT_URI`, `META_OAUTH_SCOPES`, and
+`INTEGRATION_ENCRYPTION_KEY`. Missing Meta or encryption configuration fails the
+integration closed with `503`.
 
 ## Operational notes
 
-- `autoDeploy` is enabled but **the GitHub webhook does not fire**. Deploys are
-  triggered manually through the Render API.
-- A `200` from `/health` during a rollout can still be the previous instance.
-  Check the deploy's `finishedAt` before trusting a post-deploy test.
-- A local `uvicorn` without `--reload` serves the code it started with. A stale
-  process caused a `404` on a route that existed in source.
-- cron-job.org pings `/health` to keep the free instance warm. Render's free tier
-  allows 750 instance-hours per month; staying awake continuously costs ~730.
+- Render's GitHub webhook previously did not fire; verify a deploy's `finishedAt`
+  rather than assuming a push is live.
+- cron-job.org pings `/api/v1/health` for the free instance.
+- No live Meta request has been made in this slice.
 
 ## Not yet implemented
 
-Comment context (`post_text` and `parent_text` are nullable and unpopulated) ·
-full moderation history endpoint · replaceable ingestion source interface · real
-Facebook ingestion · platform administration beyond request review · False
-Suppression Rate and Missed Harm Rate.
+Comment synchronization, webhook ingestion, provider-side hide/unhide, full
+moderation history, wider Platform Administration, quality metrics with valid
+denominators, and rate limiting.

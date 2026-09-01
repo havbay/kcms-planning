@@ -177,3 +177,47 @@ Platform Administration is a platform-level role and is not expressible through
 `app_user.is_platform_admin` is set from a `PLATFORM_ADMIN_EMAILS` environment
 allowlist when a matching account signs in. It is never settable through the API,
 so the role cannot be self-assigned or escalated by any request.
+
+## Client Facebook Page Connection
+
+All endpoints require a Client session and an approved, non-sandbox workspace.
+One workspace has at most one active Page Connection. Provider credentials are
+encrypted at rest and never occur in a response.
+
+| Method | Path | operationId |
+|---|---|---|
+| `GET` | `/api/v1/facebook/connection` | `getFacebookConnection` |
+| `DELETE` | `/api/v1/facebook/connection` | `disconnectFacebookPage` |
+| `POST` | `/api/v1/facebook/connections/manual` | `connectFacebookPageManually` |
+| `POST` | `/api/v1/facebook/oauth/start` | `startFacebookAuthorization` |
+| `GET` | `/api/v1/facebook/oauth/sessions/{state}` | `listFacebookPageChoices` |
+| `POST` | `/api/v1/facebook/oauth/sessions/{state}/selection` | `selectFacebookPage` |
+
+The manual request contains only `page_access_token`. KCMS validates it with the
+provider and derives Page id, name, tasks, and capability. Facebook authorization
+returns an authorization URL; its callback stores encrypted Page candidates and
+redirects to the frontend with an opaque, single-use session state. The Client
+then chooses one authorized Page.
+
+Both methods return the same public shape: state, Page id/name, method, tasks,
+`can_moderate`, connection time, and last synchronization time. The acquisition
+method never grants capability that the Meta token does not have.
+
+## Moderation Collection Depth
+
+`GET /api/v1/comments` accepts:
+
+- `limit` and `offset`
+- `query`
+- `severity`: `SAFE` · `OFFENSIVE` · `HARMFUL`
+- `target`: `PERSON` · `INSTITUTION` · `NEITHER`
+- `surfaced_reason`: `triage` · `institution_sample` · `novel_language` ·
+  `uncertainty` · `cleared`
+- `review_status`: `PENDING` · `ACTIONED`
+- `sort`: `PRIORITY` · `NEWEST` · `OLDEST`
+
+Each item includes `post_text`, `parent_text`, `is_reply`, `post_kind`, and an
+optional `post_permalink`, in addition to verdict, Action, and Correction fields.
+Sort order always includes `comment_id` as its final tie-breaker. Source context
+is customer content and must never leak into ordinary Platform Administration
+responses.
