@@ -60,3 +60,18 @@ artifact. A rolling deploy will otherwise answer from the old instance.
 
 `META_GRAPH_VERSION` and `INTEGRATION_ENCRYPTION_KEY` must be set on Render or
 connecting a Page returns 503.
+
+
+## Authentication redesign — drafted, not approved
+
+`docs/plans/2026-09-02-authentication-and-access-redesign.md` records an agreed
+direction: owners sign up with Facebook, Google, or email and password; owners
+create team member accounts inside the product; one sign-in screen for everyone.
+
+Do not implement it yet — the team is finishing other work first.
+
+Do not build `POST /api/v1/team/invitations/{token}/registration`. The draft
+supersedes it: owner-created accounts mean an invited person never registers.
+
+Facebook-only signup cannot ship while the Meta app is in Development mode,
+where Facebook Login admits only people holding a role on the app.
