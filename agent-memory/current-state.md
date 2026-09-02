@@ -1,7 +1,7 @@
 # Current State
 
-**Updated:** 2026-09-01
-**Active part:** Client Page Connection and moderation depth
+**Updated:** 2026-09-02
+**Active part:** Multi-Page operations and moderation UI consolidation
 
 KCMS V2 is a working bilingual full-stack prototype. The public experience,
 onboarding, identity, isolated Client workspace, overview, moderation Actions,
@@ -12,7 +12,7 @@ model remains future work; the current disclosed engine is PatternMatcher v0.1.
 
 - Client Page Connection now uses a real product workflow rather than a request
   form: **Continue with Facebook** or an advanced **Page access token**.
-- Both methods converge on one encrypted workspace record and expose capability
+- Both methods converge on encrypted workspace records and expose capability
   according to Meta tasks, not according to connection method.
 - The Meta application and Render environment are configured. Facebook Login
   URLs include the Business Login configuration id, and the frontend explains
@@ -22,41 +22,52 @@ model remains future work; the current disclosed engine is PatternMatcher v0.1.
   visitors back to Request access.
 - Approved Clients may connect an authorized Facebook Page directly from their
   workspace. Sample-data status is not a Page-connection authorization gate.
-- Moderation is a standard compact data table with server-side filters, source
-  post/caption/type, stable pagination, and a complete comment review panel.
+- Page Connection supports a connected-Pages collection and per-Page sync and
+  disconnect operations. The screen shows connected Pages and their capability
+  state before the two connection methods.
+- Moderation is a standard compact data table with inline Actions, commenter,
+  server-side filters, source-post links/caption/type, stable pagination,
+  periodic foreground synchronization, and a complete comment review panel.
 - Source and parent context are populated for seeded prototype conversations.
-- Actions and Corrections remain separate. Current KCMS Actions are stored
-  locally; provider-side hide/unhide is not yet implemented.
+- Actions and Corrections remain separate. HIDE and UNHIDE are mirrored to Meta
+  for imported comments; failed provider Actions roll back instead of claiming
+  success locally.
 
 ## Evidence
 
-- All 77 backend tests pass against PostgreSQL, including direct authenticated
-  Client Page Connection, invite-only account creation, credential protection,
-  comment context, workspace isolation, and OpenAPI.
+- Facebook Login, Page discovery, comment synchronization, and provider-side
+  hide/unhide were exercised successfully against a controlled Facebook Page.
+- The current backend test run has 44 passing tests and 69 database-dependent
+  skips because local PostgreSQL is unavailable. Earlier database-backed suites
+  covered workspace isolation, credential protection, and OpenAPI.
 - The direct-connection and removed-contract tests failed before the obsolete
   approval gate/routes were removed and pass afterward.
-- All 34 frontend unit tests, strict TypeScript, lint without errors, production
-  build, and 24 Playwright tests with one intentional skip pass.
-- The configuration-aware backend and frontend are live. A successful Meta
-  consent callback has not yet been observed, so Page discovery,
-  synchronization, and provider Actions remain explicitly unverified.
+- The merged frontend passes 55 unit tests, strict TypeScript, ESLint with no
+  errors and one pre-existing Fast Refresh warning, production build, and 24
+  Playwright tests with one intentional skip.
+- The redesigned teammate frontend was conflict-resolved in PR #5 and merged to
+  `main` as `5008e71`. That deployment was promoted and verified live on the
+  public Vercel alias.
 
 ## Repository boundary
 
 | Repository | Active branch | Publication state |
 |---|---|---|
-| `kcms-frontend` | `main` | `a2c6d44`, deployed on Vercel |
-| `kcms-backend` | `main` | `4b5addb`, deployed on Render |
+| `kcms-frontend` | `main` | `5008e71`, promoted to Vercel production |
+| `kcms-backend` | `main` | `6f8ab19`, deployed on Render |
 | `kcms-planning` | `main` | this state update pending push |
 
 KCMS v1 remains unchanged and is reference evidence only.
 
 ## Remaining work
 
-- Controlled live Meta authorization, Page discovery, synchronization, and
-  reversible hide/unhide proof.
 - Full moderation history and provider event reconciliation.
+- Persistent/background synchronization and webhooks; current polling runs only
+  while the Moderate screen is open.
 - Broader Platform Administration, workspace switching, and valid quality
   metrics.
+- Change Vercel Project Settings > Git > Production Branch from
+  `feature/landing-header-hero` to `main`; production is currently correct only
+  because the `main` preview was manually promoted.
 - Authorized manual Khmer dataset, offline training/evaluation, and a versioned
   model deployment after it beats the baseline safely.

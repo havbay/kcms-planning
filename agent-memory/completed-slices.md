@@ -45,6 +45,10 @@ running backend and persistence, and its gates pass.
 - Facebook Login and advanced Page-token setup converge on one encrypted record.
 - The obsolete Client Page-request form and Platform Operations connection queue
   were removed from both the product and OpenAPI contract.
+- Multiple connected Pages are listed and managed through collection and
+  per-Page synchronization/disconnect routes.
+- A controlled live Page proved Facebook Login, comment ingestion, and reversible
+  provider-side hide/unhide.
 
 ## Part 6 — Team and settings
 
@@ -57,9 +61,13 @@ running backend and persistence, and its gates pass.
 - Moderation rebuilt as a paginated table with an expandable detail row.
 - Application type scale scoped to the dashboard, separate from marketing.
 - Workspace summary computed in the database rather than from a page.
+- Teammate Overview and moderation redesign conflict-resolved against the
+  multi-Page production contract and merged through PR #5.
 
 ## Verification at the time of writing
 
-89 backend tests, 35 frontend unit tests, 24 passing Playwright tests with one
-intentional skip. Strict TypeScript,
-ESLint, Vite production build, ruff. Security guards mutation-tested.
+Latest frontend gate: 55 unit tests, strict TypeScript, ESLint with no errors
+(one pre-existing Fast Refresh warning), Vite production build, and 24 passing
+Playwright tests with one intentional skip. Latest backend run: 44 pass and 69
+database tests skip because local PostgreSQL is unavailable. Security guards
+were mutation-tested in the earlier database-backed suite.

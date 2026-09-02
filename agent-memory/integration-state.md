@@ -12,9 +12,9 @@ byte equality, and the frontend vendors that artifact and regenerates
 | Backend | https://kcms-backend.onrender.com |
 | Database | Render PostgreSQL 16, Singapore |
 
-The onboarding, Page Connection, and expanded moderation contract are deployed.
-Frontend commit `a2c6d44` is live on Vercel and backend commit `4b5addb` is live
-on Render.
+The onboarding, multi-Page Connection, and expanded moderation contract are
+deployed. Frontend commit `5008e71` is live on Vercel after manual promotion and
+backend commit `6f8ab19` is live on Render.
 
 ## Verified contract boundary
 
@@ -38,14 +38,19 @@ on Render.
   are also absent from the current contract; onboarding is the single KCMS
   approval boundary.
 
-## Live evidence still required
+## Live provider evidence
 
-1. Sign in with an approved Client account, authorize a Page the same Meta
-   account administers, and confirm Page discovery/tasks.
-2. Synchronize a controlled video post and its comment.
-3. Confirm pattern matching surfaces the synchronized comment.
-4. Hide and unhide through KCMS, then verify the result on Facebook.
-5. Disconnect/reconnect and prove credential-loss recovery.
+Facebook Login, Page discovery, controlled comment synchronization, and
+reversible hide/unhide were observed against a real test Page. Remaining live
+proof is multi-Page behavior across two independently authorized Pages and
+disconnect/reconnect credential-loss recovery.
+
+## Deployment caveat
+
+Vercel still records `feature/landing-header-hero` as the automatic Production
+Branch. The public alias currently serves `main` commit `5008e71` because its
+preview was manually promoted. Change the project Git setting to `main` before
+assuming future pushes are production deployments.
 
 ## Testing seam
 

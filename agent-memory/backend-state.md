@@ -26,8 +26,8 @@ routes.
 - Moderation list with server-side query, severity, target, surfaced-reason,
   review-status, sort, offset/limit, stable tie-breaker, source post/caption/type,
   parent context, actions, Corrections, and database-computed summary.
-- One workspace-scoped Facebook Page Connection. Facebook authorization and the
-  advanced Page-token path converge on the same record. Page identity/tasks are
+- Workspace-scoped Facebook Page Connections. Facebook authorization and the
+  advanced Page-token path converge on the same connection model. Page identity/tasks are
   provider-derived; credentials are Fernet-encrypted, never returned, and
   deleted on disconnect. OAuth state is hashed, scoped to user/workspace,
   expiring, and single-use.
@@ -50,7 +50,8 @@ src/kcms/
 
 ## Verification
 
-All 77 current tests pass against PostgreSQL. Page Connection tests prove
+The latest local run has 44 passing tests and 69 database-dependent skips because
+PostgreSQL is unavailable. Earlier database-backed Page Connection tests prove
 session enforcement, direct Client OAuth start, failed token validation,
 workspace-scoped OAuth state, single use, encrypted storage, non-disclosure, and
 disconnect. Contract tests prove the removed Page-approval API cannot return to
@@ -73,14 +74,13 @@ management, and Page webhook metadata management.
   rather than assuming a push is live.
 - cron-job.org pings `/api/v1/health` for the free instance.
 - The Meta application and Render variables have been configured by the owner.
-  The configuration-aware release is live with no Render error logs, but a
-  successful authorization response has not yet been observed by KCMS.
+  Facebook authorization, comment synchronization, and hide/unhide were exercised
+  successfully against a controlled Page.
 
 ## Not yet implemented
 
-Comment synchronization, webhook ingestion, provider-side hide/unhide, full
-moderation history, wider Platform Administration, quality metrics with valid
-denominators, and rate limiting.
+Webhook/background ingestion, full moderation history, wider Platform
+Administration, quality metrics with valid denominators, and rate limiting.
 
 
 ## Facebook comment ingestion and action mirroring

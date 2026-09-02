@@ -5,9 +5,9 @@
 **Live:** https://kcms-frontend.vercel.app
 
 **Status:** The live Facebook demo path has been exercised with real Page
-comments and provider-side hide/unhide. A teammate's pricing merge introduced
-a frontend/backend Page Connection contract mismatch. The matching multi-Page
-contract and Overview containment repair are now deployed and publicly verified.
+comments and provider-side hide/unhide. The matching multi-Page contract,
+redesigned Overview and moderation UI, and Overview containment repair are now
+merged to `main` at `5008e71` and publicly verified.
 
 ## Implemented
 
@@ -24,9 +24,10 @@ contract and Overview containment repair are now deployed and publicly verified.
   reports a general authorization failure. It never opens a second KCMS
   approval request. The frontend never receives a stored token.
 - Moderate: compact server-paginated table with search, review status, severity,
-  target, surfacing reason, sort, source-post caption/type, and deterministic
-  pagination. Selecting a row opens the complete context/verdict panel. Actions
-  and label Corrections are deliberately separate controls.
+  target, surfacing reason, sort, commenter, linked source post, and deterministic
+  pagination. Hide/Unhide appears inline without opening detail; selecting a row
+  opens the complete context/verdict panel. Actions and label Corrections remain
+  separate controls. Foreground polling supplements the manual sync control.
 - Application shell: compact desktop sidebar and a narrow-screen top shell with
   horizontally scrollable navigation. Tables scroll inside their own container;
   comment detail becomes a full-screen mobile panel.
@@ -53,11 +54,15 @@ performance claims must still be evidence-backed.
 
 ## Not yet implemented
 
-True multi-Page persistence/API support, webhook ingestion, full moderation
-history, workspace switching, broader Platform Administration, and the trained
-Khmer model.
+Webhook/background ingestion, full moderation history, workspace switching,
+broader Platform Administration, and the trained Khmer model.
 
 **Operational note:** the multi-Page frontend and backend must deploy together.
 The frontend calls `/facebook/connections` and per-Page sync/disconnect routes;
 deploying it before the matching backend produces a Page Connection 404 and a
 generic full-page error.
+
+**Vercel note:** production currently serves the promoted `main` deployment at
+`5008e71`, but the Vercel project's automatic Production Branch still reads
+`feature/landing-header-hero`. Change it to `main` in Vercel Project Settings >
+Git before relying on push-to-production automation.

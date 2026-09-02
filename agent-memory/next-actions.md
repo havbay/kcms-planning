@@ -2,20 +2,19 @@
 
 Ordered by dependency and value. No dates.
 
-## Prove Facebook end to end
+## Stabilize Facebook operations
 
-1. Sign in with an approved Client account and test **Continue with Facebook**
-   using a Page the same Meta account administers. There is no second KCMS Page
-   approval. Keep the manual Page-token method as the assisted fallback.
-2. Implement the `CommentSource` synchronization adapter and webhook boundary.
-3. Run the agreed proof: publish a video, add a Khmer comment, synchronize it,
-   surface it through PatternMatcher, hide/unhide it in KCMS, and verify the
-   provider state on the source post.
+1. Change Vercel Project Settings > Git > Production Branch from
+   `feature/landing-header-hero` to `main`. The current `main` build is live only
+   because deployment `5008e71` was manually promoted.
+2. Add webhook or worker-backed synchronization. Current polling runs only while
+   Moderate is open and is not a server-side scheduler.
+3. Add explicit credential expiry, Page-level retry, and reconciliation states.
 
 ## Complete moderation operations
 
 4. Add full append-only moderation history and provider reconciliation.
-5. Add failure/retry states for expired credentials, provider rate limits, and
+5. Add failure/retry states for provider rate limits and
    unavailable webhooks.
 6. Add Random Audit only when real traffic exists to sample.
 
