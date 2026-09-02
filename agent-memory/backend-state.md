@@ -4,10 +4,11 @@
 **Remote:** `git@github.com:havbay/kcms-backend.git`
 **Live:** https://kcms-backend.onrender.com
 
-**Status:** Pilot onboarding, optional SMTP, Page Connection, and moderation
-depth are deployed from `main` at commit `4b5addb`. Render reports that deploy
-live, health is `READY/REACHABLE`, the OpenAPI contract matches local
-semantically, public signup is absent, and anonymous OAuth starts return `401`.
+**Status:** Pilot onboarding, optional SMTP, multi-Page Connection, comment
+moderation, and connected-Page Overview summaries are deployed from `main` at
+commit `6f8ab19`. Render reports the deploy live; public health is
+`READY/REACHABLE`, and OpenAPI exposes the Page collection and per-Page sync
+routes.
 
 ## Implemented
 

@@ -6,8 +6,8 @@
 
 **Status:** The live Facebook demo path has been exercised with real Page
 comments and provider-side hide/unhide. A teammate's pricing merge introduced
-a frontend/backend Page Connection contract mismatch; the compatibility repair
-is locally verified and awaiting deployment.
+a frontend/backend Page Connection contract mismatch. The matching multi-Page
+contract and Overview containment repair are now deployed and publicly verified.
 
 ## Implemented
 
