@@ -99,8 +99,9 @@ an id Facebook does not know.
 `get_meta_client` requires only `META_GRAPH_VERSION`. Facebook Login checks its
 own settings when used, so a Page token works without an OAuth app.
 
-The Overview summary now applies the connected-Page filter to both headline
+The Overview summary now applies the connected-Pages filter to both headline
 totals and surfaced-reason counts; otherwise removed sample reasons could make
-the chart disagree with its four real comments. A regression test covers that
-boundary. Locally, 44 tests pass and 68 database-dependent tests skip because
-PostgreSQL is unavailable.
+the chart disagree with its real comments. The filter uses `IN`, not a scalar
+subquery, because a workspace may now connect several Pages. A regression test
+covers that boundary. Locally, 44 tests pass and 69 database-dependent tests
+skip because PostgreSQL is unavailable.

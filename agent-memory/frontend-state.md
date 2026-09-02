@@ -57,7 +57,7 @@ True multi-Page persistence/API support, webhook ingestion, full moderation
 history, workspace switching, broader Platform Administration, and the trained
 Khmer model.
 
-**Operational note:** until the backend implements collection routes, the
-multi-Page-shaped UI adapts the deployed singular `/facebook/connection`,
-`/facebook/sync`, and disconnect endpoints and honestly caps the workspace at
-one Page.
+**Operational note:** the multi-Page frontend and backend must deploy together.
+The frontend calls `/facebook/connections` and per-Page sync/disconnect routes;
+deploying it before the matching backend produces a Page Connection 404 and a
+generic full-page error.
