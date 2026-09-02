@@ -99,5 +99,8 @@ an id Facebook does not know.
 `get_meta_client` requires only `META_GRAPH_VERSION`. Facebook Login checks its
 own settings when used, so a Page token works without an OAuth app.
 
-Tests: 86. `tests/test_comment_sync.py` covers import, idempotent re-sync,
-mirroring, the seeded-comment exemption, and the rollback on refusal.
+The Overview summary now applies the connected-Page filter to both headline
+totals and surfaced-reason counts; otherwise removed sample reasons could make
+the chart disagree with its four real comments. A regression test covers that
+boundary. Locally, 44 tests pass and 68 database-dependent tests skip because
+PostgreSQL is unavailable.

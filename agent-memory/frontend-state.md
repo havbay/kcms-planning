@@ -4,10 +4,10 @@
 **Remote:** `git@github.com:havbay/kcms-frontend.git`
 **Live:** https://kcms-frontend.vercel.app
 
-**Status:** Onboarding, Page Connection, and moderation depth are deployed from
-`main` at commit `a2c6d44`. The production JavaScript asset was checked for the
-reviewed-access link, approval-request outcome, and demo-admin guidance. Live
-Meta authorization is configured but has not yet completed a real consent callback.
+**Status:** The live Facebook demo path has been exercised with real Page
+comments and provider-side hide/unhide. A teammate's pricing merge introduced
+a frontend/backend Page Connection contract mismatch; the compatibility repair
+is locally verified and awaiting deployment.
 
 ## Implemented
 
@@ -41,21 +41,23 @@ Playwright. API types are generated from the backend-owned OpenAPI artifact with
 
 ## Verification
 
-The current slice passes 34 Vitest tests, strict TypeScript, ESLint with no
-errors, the production build, and 24 Playwright tests with one intentional skip.
+The current slice passes 55 Vitest tests, strict TypeScript, ESLint with no
+errors (one pre-existing Fast Refresh warning), and the production build.
 
 ## Copy boundary
 
 "Automatic detection" names the step and "Pattern matching v0.1" names the
-current engine. Automatic hiding is off today. No invented pricing, metrics,
-testimonials, or accuracy claims are permitted.
+current engine. Automatic hiding is off today. Published early-access pricing
+now has Starter, Growth, and Enterprise plans; testimonials, accuracy, and
+performance claims must still be evidence-backed.
 
 ## Not yet implemented
 
-Live Meta verification, comment synchronization, provider-side hide/unhide,
-full moderation history, workspace switching, broader Platform Administration,
-and the trained Khmer model.
+True multi-Page persistence/API support, webhook ingestion, full moderation
+history, workspace switching, broader Platform Administration, and the trained
+Khmer model.
 
-**Next frontend action:** after the live Facebook source contract works,
-replace seeded context with real synchronized posts/comments and verify the same
-review UI against a controlled Page.
+**Operational note:** until the backend implements collection routes, the
+multi-Page-shaped UI adapts the deployed singular `/facebook/connection`,
+`/facebook/sync`, and disconnect endpoints and honestly caps the workspace at
+one Page.
