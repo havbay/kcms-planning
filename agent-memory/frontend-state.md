@@ -7,7 +7,8 @@
 **Status:** The live Facebook demo path has been exercised with real Page
 comments and provider-side hide/unhide. The matching multi-Page contract,
 redesigned Overview and moderation UI, and Overview containment repair are now
-merged to `main` at `5008e71` and publicly verified.
+merged to `main`. PR #6 added Rules/Profile/Page UI, and the sign-in layout fix
+at `c607084` is publicly verified.
 
 ## Implemented
 
@@ -62,7 +63,6 @@ The frontend calls `/facebook/connections` and per-Page sync/disconnect routes;
 deploying it before the matching backend produces a Page Connection 404 and a
 generic full-page error.
 
-**Vercel note:** production currently serves the promoted `main` deployment at
-`5008e71`, but the Vercel project's automatic Production Branch still reads
-`feature/landing-header-hero`. Change it to `main` in Vercel Project Settings >
-Git before relying on push-to-production automation.
+**Vercel note:** `main` is now the Production Branch. Push `c607084` created a
+Production deployment automatically; the public alias served the exact CSS and
+JavaScript fingerprints from the verified local build.

@@ -45,15 +45,16 @@ model remains future work; the current disclosed engine is PatternMatcher v0.1.
 - The merged frontend passes 55 unit tests, strict TypeScript, ESLint with no
   errors and one pre-existing Fast Refresh warning, production build, and 24
   Playwright tests with one intentional skip.
-- The redesigned teammate frontend was conflict-resolved in PR #5 and merged to
-  `main` as `5008e71`. That deployment was promoted and verified live on the
-  public Vercel alias.
+- The teammate's Rules/Profile/Page UI update from PR #6 is integrated on
+  `main`. The sign-in card no longer inherits viewport-filling flex growth;
+  desktop and mobile screenshots verify the content-sized card and single-row
+  mobile header at `c607084`.
 
 ## Repository boundary
 
 | Repository | Active branch | Publication state |
 |---|---|---|
-| `kcms-frontend` | `main` | `5008e71`, promoted to Vercel production |
+| `kcms-frontend` | `main` | `c607084`, automatically deployed on Vercel |
 | `kcms-backend` | `main` | `6f8ab19`, deployed on Render |
 | `kcms-planning` | `main` | this state update pending push |
 
@@ -66,8 +67,5 @@ KCMS v1 remains unchanged and is reference evidence only.
   while the Moderate screen is open.
 - Broader Platform Administration, workspace switching, and valid quality
   metrics.
-- Change Vercel Project Settings > Git > Production Branch from
-  `feature/landing-header-hero` to `main`; production is currently correct only
-  because the `main` preview was manually promoted.
 - Authorized manual Khmer dataset, offline training/evaluation, and a versioned
   model deployment after it beats the baseline safely.
