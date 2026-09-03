@@ -240,3 +240,21 @@ still constrained by the Client's Meta account, app mode, permissions, Page
 tasks, token validation, and KCMS workspace authentication. The former
 `/access-requests` Page-approval API and Platform Operations Page-connections
 queue are removed.
+
+
+## D-027: Automatic Removal Waits For A Trained Model
+
+Auto-removal shipped briefly: a HARMFUL verdict deleted the comment from the
+Page on arrival, by `system:auto-removal`, with no person involved. It is now
+off, behind `auto_removal_enabled`.
+
+A keyword list is not evidence enough to destroy a customer's comment. Deletion
+cannot be undone on Facebook, so a false positive from pattern matching is
+permanent and silent, and the errors a rule-based matcher makes are exactly the
+ones nobody sees. D-010 therefore stands unchanged: every Facebook moderation
+Action is a human decision throughout the prototype.
+
+The routing that decides what *would* be auto-removed is kept and tested in both
+positions, including the carve-out that never auto-removes institution-directed
+criticism. Enabling it when a trained model earns the confidence is one setting,
+not rebuilt work.

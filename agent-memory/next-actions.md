@@ -90,3 +90,12 @@ volume, not guessed.
 Separately: `surfaced_reason=cleared` is offered as a filter in the API and the
 UI but the work list excludes cleared rows before filtering, so it always
 returns nothing. Remove the option.
+
+
+## Auto-removal is off
+
+`auto_removal_enabled` defaults false. Focus is the rule-based path: the
+per-workspace keywords Rin added, and the cleared-sampling draft.
+
+The landing page's "humans decide every moderation action" is true again, so the
+copy rewrite that was pending is no longer needed.
