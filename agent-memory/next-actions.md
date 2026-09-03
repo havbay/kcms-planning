@@ -99,3 +99,20 @@ per-workspace keywords Rin added, and the cleared-sampling draft.
 
 The landing page's "humans decide every moderation action" is true again, so the
 copy rewrite that was pending is no longer needed.
+
+
+## Moderation actions — drafted, not approved
+
+`docs/plans/2026-09-03-moderation-actions.md`. Restores HIDE and UNHIDE
+alongside LEAVE and DELETE, so a moderator has a reversible option for a comment
+they are unsure about.
+
+`set_comment_hidden` still exists on the Graph client and the action table still
+permits both kinds, so the work is mostly widening ActionKind and the buttons.
+
+Verified constraint: a Page cannot hide its own comments — Meta reports
+can_hide false and refuses with "(#200) Can not hide or unhide this comment".
+It will delete the same comment. Decide whether can_hide is stored at ingest
+before building the buttons.
+
+Safe comments stay out of the dashboard. That is settled, not a defect.
