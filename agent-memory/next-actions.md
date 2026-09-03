@@ -75,3 +75,18 @@ supersedes it: owner-created accounts mean an invited person never registers.
 
 Facebook-only signup cannot ship while the Meta app is in Development mode,
 where Facebook Login admits only people holding a role on the app.
+
+
+## Cleared sampling — drafted, not approved
+
+`docs/plans/2026-09-03-cleared-sampling.md`. Cleared comments stay out of the
+queue by the team's decision. A small random sample is surfaced instead, as a
+new `cleared_sample` surfaced_reason, so false negatives can be found and
+corrections can be recorded on comments the matcher passed over.
+
+Sample rate is unresolved and should be chosen against the connected Page's real
+volume, not guessed.
+
+Separately: `surfaced_reason=cleared` is offered as a filter in the API and the
+UI but the work list excludes cleared rows before filtering, so it always
+returns nothing. Remove the option.
