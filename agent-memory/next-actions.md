@@ -4,8 +4,8 @@ Ordered by dependency and value. No dates.
 
 ## Stabilize Facebook operations
 
-1. Add webhook or worker-backed synchronization. Current polling runs only while
-   Moderate is open and is not a server-side scheduler.
+1. Add webhook or worker-backed synchronization. Current polling runs in the
+   authenticated dashboard every 60 seconds and is not a server-side scheduler.
 2. Add explicit credential expiry, Page-level retry, and reconciliation states.
 
 ## Complete moderation operations

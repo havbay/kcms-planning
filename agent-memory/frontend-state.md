@@ -43,7 +43,7 @@ Playwright. API types are generated from the backend-owned OpenAPI artifact with
 
 ## Verification
 
-The current slice passes 55 Vitest tests, strict TypeScript, ESLint with no
+The current slice passes 74 Vitest tests, strict TypeScript, ESLint with no
 errors (one pre-existing Fast Refresh warning), and the production build.
 
 ## Copy boundary
@@ -62,6 +62,12 @@ broader Platform Administration, and the trained Khmer model.
 The frontend calls `/facebook/connections` and per-Page sync/disconnect routes;
 deploying it before the matching backend produces a Page Connection 404 and a
 generic full-page error.
+
+Dashboard polling owns one client-side sync loop for the authenticated `/app`
+shell. It polls connected Pages every 60 seconds while the tab is visible,
+skips overlapping requests, and dispatches a refresh event for Moderate. The
+Moderate screen keeps its manual sync button but no longer creates a duplicate
+timer.
 
 **Vercel note:** `main` is now the Production Branch. Push `c607084` created a
 Production deployment automatically; the public alias served the exact CSS and

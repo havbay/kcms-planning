@@ -64,3 +64,8 @@ contract now includes that value; otherwise Management failed at
 `GET /api/v1/facebook/connections` with a Pydantic validation error. The
 backend regression test covers an active trial workspace returning an empty,
 valid connection list.
+
+The authenticated dashboard now polls connected Pages every 60 seconds while
+visible. The frontend sends one sync request per connected Page and refreshes
+Moderate after the background result; server-side webhook/worker ingestion is
+still deferred.
