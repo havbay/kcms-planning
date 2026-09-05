@@ -109,3 +109,9 @@ the chart disagree with its real comments. The filter uses `IN`, not a scalar
 subquery, because a workspace may now connect several Pages. A regression test
 covers that boundary. Locally, 44 tests pass and 69 database-dependent tests
 skip because PostgreSQL is unavailable.
+
+The Page Connections response accepts `TRIAL` as well as `STARTER` and `GROWTH`.
+This matters for Clerk-created seven-day trial workspaces: omitting `TRIAL`
+causes `GET /api/v1/facebook/connections` to raise a Pydantic 500 before any
+Facebook operation begins. The regression is covered by the trial workspace
+connection-status test in `tests/test_page_connections.py`.

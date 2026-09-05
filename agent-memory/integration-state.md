@@ -56,3 +56,11 @@ assuming future pushes are production deployments.
 
 Frontend tests intercept at the network boundary. Backend tests replace the
 `MetaClient` protocol. Real provider behavior is not inferred from either seam.
+
+## Trial Management regression
+
+Clerk-created trial workspaces use plan `TRIAL`. The backend Page Connections
+contract now includes that value; otherwise Management failed at
+`GET /api/v1/facebook/connections` with a Pydantic validation error. The
+backend regression test covers an active trial workspace returning an empty,
+valid connection list.
