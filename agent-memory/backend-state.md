@@ -31,16 +31,24 @@ routes.
   provider-derived; credentials are Fernet-encrypted, never returned, and
   deleted on disconnect. OAuth state is hashed, scoped to user/workspace,
   expiring, and single-use.
+- Automated Replies demo slice (local, not deployed): migration 021 adds
+  workspace-level `auto_reply_enabled` setting,
+  ordered workspace-owned rules, and an append-only decision-event log. The
+  authenticated API supports owner-only settings, rule CRUD, reorder, safe
+  simulation, and event reads. Page sync now processes newly imported safe
+  comment matches through the Meta comment-reply edge when the owner enables
+  replies; Messenger remains deferred.
 
 ## Layout
 
 ```text
-migrations/            forward-only SQL 001-011
+migrations/            forward-only SQL 001-021
 src/kcms/
 ├── api/               HTTP routes and transport schemas
 ├── auth/              identities, sessions and security
 ├── integrations/      Meta seam, encrypted credentials and Page repository
 ├── moderation/        classifier seam, matcher, repository and seeds
+├── autoreply/          Khmer normalization, rule validation and reply pipeline
 ├── notifications/     SMTP contract and adapter
 ├── pilot/             public requests and owner setup
 ├── team/              membership and invitations
@@ -50,12 +58,11 @@ src/kcms/
 
 ## Verification
 
-The latest local run has 44 passing tests and 69 database-dependent skips because
-PostgreSQL is unavailable. Earlier database-backed Page Connection tests prove
-session enforcement, direct Client OAuth start, failed token validation,
-workspace-scoped OAuth state, single use, encrypted storage, non-disclosure, and
-disconnect. Contract tests prove the removed Page-approval API cannot return to
-OpenAPI. Fernet round-trip and tamper rejection are also tested.
+The latest local run has 168 passing backend tests with the local PostgreSQL
+compose service running. Automated Replies adds pure rule-engine coverage,
+authenticated settings/rule/event coverage, and fake-provider tests for live,
+safety, and idempotency. No Automated Replies code is deployed yet;
+the real Meta-side post still needs a controlled deployment test.
 
 ## Environment
 
@@ -81,6 +88,8 @@ management, and Page webhook metadata management.
 
 Webhook/background ingestion, full moderation history, wider Platform
 Administration, quality metrics with valid denominators, and rate limiting.
+Messenger and broad automated-reply rollout remain deferred; the controlled
+Facebook comment-reply demo is covered by ADR-0006.
 
 
 ## Facebook comment ingestion and action mirroring

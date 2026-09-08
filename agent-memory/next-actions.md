@@ -8,27 +8,35 @@ Ordered by dependency and value. No dates.
    authenticated dashboard every 60 seconds and is not a server-side scheduler.
 2. Add explicit credential expiry, Page-level retry, and reconciliation states.
 
+## Automated Replies
+
+3. Run the controlled real-Page comment-reply demo under ADR-0006: one owner,
+   one connected Page, one enabled comments rule, and a unique safe test comment.
+4. Add first-match overlap warnings and an admin-facing event detail view.
+5. Add retry/reconciliation handling for provider failures, then measure replies
+   sent on comments later labelled as complaints; target zero.
+
 ## Complete moderation operations
 
-3. Add full append-only moderation history and provider reconciliation.
-4. Add failure/retry states for provider rate limits and
+6. Add full append-only moderation history and provider reconciliation.
+7. Add failure/retry states for provider rate limits and
    unavailable webhooks.
-5. Add Random Audit only when real traffic exists to sample.
+8. Add Random Audit only when real traffic exists to sample.
 
 ## Product operations
 
-6. Configure transactional SMTP when a verified sender domain is available;
+9. Configure transactional SMTP when a verified sender domain is available;
    the audited manual setup-link fallback remains valid until then.
-7. Add Platform Administration for workspaces, users, integration health, and
+10. Add Platform Administration for workspaces, users, integration health, and
    audit logs without exposing ordinary customer comment content.
-8. Add workspace switching before one user manages multiple organizations.
+11. Add workspace switching before one user manages multiple organizations.
 
 ## Model track
 
-9. Write the Khmer annotation guideline and collect authorized manual seed data.
-10. Keep training and evaluation conversations separated, train offline, and
+12. Write the Khmer annotation guideline and collect authorized manual seed data.
+13. Keep training and evaluation conversations separated, train offline, and
     deploy only a version that passes false-suppression and missed-harm gates.
-11. Corrections feed a reviewed future training round; the live system never
+14. Corrections feed a reviewed future training round; the live system never
     retrains automatically.
 
 ## Deliberately deferred

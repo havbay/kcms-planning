@@ -1,6 +1,6 @@
 # Current State
 
-**Updated:** 2026-09-02
+**Updated:** 2026-09-07
 **Active part:** Multi-Page operations and moderation UI consolidation
 
 KCMS V2 is a working bilingual full-stack prototype. The public experience,
@@ -32,6 +32,10 @@ model remains future work; the current disclosed engine is PatternMatcher v0.1.
 - Actions and Corrections remain separate. HIDE and UNHIDE are mirrored to Meta
   for imported comments; failed provider Actions roll back instead of claiming
   success locally.
+- Automated Replies has an owner-controlled Facebook comment demo path. Dry-run
+  is the default; live mode replies only to newly synced SAFE comments matching
+  an enabled comments rule, records idempotent events, and leaves Messenger
+  under development.
 
 ## Evidence
 

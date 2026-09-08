@@ -135,7 +135,9 @@ It is the only route by which false negatives become visible in production.
 - Native mobile applications.
 - Multi-organization enterprise hierarchy above customer workspaces.
 - A dedicated client-facing Annotation workspace.
-- Automatic public replies, Messenger automation, and other provider integrations.
+- General automatic public replies, Messenger automation, and other provider
+  integrations. A narrow owner-controlled Facebook comment-reply demo is
+  accepted by ADR-0006.
 - A production trained Khmer model before the manual dataset and evaluation gates
   exist.
 - Automatic model retraining.
@@ -151,7 +153,9 @@ It is the only route by which false negatives become visible in production.
 - A real backend Work List can be loaded and acted upon from the frontend.
 - Every role is denied capabilities it does not hold.
 - The same API supports scripted local ingestion and a future Facebook adapter.
-- Every prototype Facebook moderation Action is explicitly made by a human.
+- Every prototype Facebook moderation Action (hide, unhide, leave, or delete)
+  is explicitly made by a human. ADR-0006 is limited to saved replies on safe
+  comments and does not authorize moderation Actions.
 - The pattern matcher is disclosed in the UI and replaceable without changing the
   moderation workflow.
 - False suppression and missed harm are measured separately when denominators exist.

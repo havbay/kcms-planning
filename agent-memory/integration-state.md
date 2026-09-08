@@ -37,6 +37,13 @@ backend commit `6f8ab19` is live on Render.
 - Public signup remains absent from OpenAPI. The Page-approval request endpoints
   are also absent from the current contract; onboarding is the single KCMS
   approval boundary.
+- The local OpenAPI contract now includes `/api/v1/auto-replies` for workspace
+  settings, owner-managed rules, simulation, and decision-log reads. The
+  frontend regenerated `src/api/schema.d.ts` from that artifact. Page sync now
+  also returns controlled auto-reply counts and uses the Meta comment-reply
+  edge only after owner confirmation. The API no longer exposes a separate
+  preview mode. This slice is local only until the
+  repositories are intentionally pushed and deployed.
 
 ## Live provider evidence
 
@@ -65,7 +72,13 @@ contract now includes that value; otherwise Management failed at
 backend regression test covers an active trial workspace returning an empty,
 valid connection list.
 
-The authenticated dashboard now polls connected Pages every 60 seconds while
+The authenticated dashboard now polls connected Pages every 30 seconds while
 visible. The frontend sends one sync request per connected Page and refreshes
 Moderate after the background result; server-side webhook/worker ingestion is
 still deferred.
+
+Automated Replies uses the existing Page sync boundary. The PatternMatcher risk
+gate and idempotent event log run before a provider reply; the owner confirms
+the live feature, and provider failure is recorded without claiming success.
+The rule preview is non-posting. Messenger and server-side worker/webhook
+ingestion remain deferred.

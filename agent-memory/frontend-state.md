@@ -34,6 +34,11 @@ at `c607084` is publicly verified.
   comment detail becomes a full-screen mobile panel.
 - Platform Administration remains limited to initial pilot-access review; the
   obsolete Page-connections queue is removed.
+- Client Workspace Automated Replies screen: owner-only master switch with live
+  confirmation, live Facebook scope banner, ordered rule list with
+  add/enable/remove controls, non-posting rule preview, and decision-log table.
+  The screen calls the generated `/api/v1/auto-replies` contract and keeps
+  Messenger visibly disabled as under development.
 
 ## Runtime
 
@@ -43,8 +48,11 @@ Playwright. API types are generated from the backend-owned OpenAPI artifact with
 
 ## Verification
 
-The current slice passes 74 Vitest tests, strict TypeScript, ESLint with no
-errors (one pre-existing Fast Refresh warning), and the production build.
+The current slice passes 76 Vitest tests, strict TypeScript, ESLint with no
+errors (three pre-existing Fast Refresh warnings), and the production build.
+The Playwright suite is aligned with the Clerk auth surface and the approved
+free-trial signup flow; provider-backed tests still need real Clerk credentials
+when run outside local stub boundaries.
 
 ## Copy boundary
 
@@ -56,7 +64,9 @@ performance claims must still be evidence-backed.
 ## Not yet implemented
 
 Webhook/background ingestion, full moderation history, workspace switching,
-broader Platform Administration, and the trained Khmer model.
+broader Platform Administration, Messenger automation, and the trained Khmer
+model. Real Meta-side auto-reply verification remains a controlled deployment
+test.
 
 **Operational note:** the multi-Page frontend and backend must deploy together.
 The frontend calls `/facebook/connections` and per-Page sync/disconnect routes;
@@ -64,7 +74,7 @@ deploying it before the matching backend produces a Page Connection 404 and a
 generic full-page error.
 
 Dashboard polling owns one client-side sync loop for the authenticated `/app`
-shell. It polls connected Pages every 60 seconds while the tab is visible,
+shell. It polls connected Pages every 30 seconds while the tab is visible,
 skips overlapping requests, and dispatches a refresh event for Moderate. The
 Moderate screen keeps its manual sync button but no longer creates a duplicate
 timer.

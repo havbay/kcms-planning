@@ -258,3 +258,16 @@ The routing that decides what *would* be auto-removed is kept and tested in both
 positions, including the carve-out that never auto-removes institution-directed
 criticism. Enabling it when a trained model earns the confidence is one setting,
 not rebuilt work.
+
+## D-030: Controlled Facebook Comment Auto-Replies
+
+The team accepts a narrow demo carve-out for rule-based replies on Facebook
+comments. A workspace owner explicitly enables the live feature; there is no
+separate demo mode. Only newly ingested SAFE comments
+matching the first enabled comments rule are eligible. The event log is
+idempotent and records provider application only after Meta confirms success.
+
+There is no fallback reply, unsafe-message reply, automatic hide/delete, or
+Messenger support. Messenger, worker/webhook ingestion, additional providers,
+and broad rollout remain deferred. This decision is recorded in ADR-0006 and
+does not weaken D-027's prohibition on automatic removal.

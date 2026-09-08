@@ -37,8 +37,9 @@ asyncpg/PostgreSQL; deterministic OpenAPI 3.1.
 - Implement frontend behavior before the matching backend behavior, then replace
   simulation with the real API before the part can complete.
 - A part is incomplete until its real frontend and backend pass a live journey.
-- Keep every prototype Facebook Action human-initiated; do not implement automatic
-  replies, Messenger automation, or additional providers in the initial MVP.
+- Keep every prototype Facebook moderation Action human-initiated. The narrow
+  owner-controlled Facebook comment-reply carve-out is governed by ADR-0006;
+  Messenger automation and additional providers remain deferred.
 - Record accepted architecture changes under adr/ before implementation depends
   on them.
 
@@ -219,8 +220,9 @@ with human-only Actions, and ready for a controlled Facebook Page pilot.
 - [ ] Deploy independently versioned frontend and backend staging services.
 - [ ] Connect a controlled Facebook Page and capture authoritative Graph API
   ingestion plus a reversible Action explicitly initiated by a Client.
-- [ ] Keep automatic Facebook Actions, public replies, Messenger automation, and
-  other providers disabled and absent from the initial MVP.
+- [ ] Keep automatic Facebook moderation Actions, Messenger automation, and
+  other providers disabled and absent from the initial MVP. Validate the
+  separately approved, owner-controlled comment-reply demo under ADR-0006.
 - [ ] Validate the primary workflow with three to five real Client users.
 - [ ] Record false-suppression and missed-harm evidence separately when labelled
   denominators exist; keep unavailable measures honest.

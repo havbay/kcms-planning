@@ -63,15 +63,17 @@ src/kcms/
 - The comment-source port supports scripted local fixtures and Facebook without
   changing moderation code.
 - Classifier adapters return the same versioned two-axis Verdict contract.
-- Every initial-MVP Facebook Action requires an authenticated human request;
-  automatic provider actions are not implemented in the prototype.
+- Every initial-MVP Facebook moderation Action requires an authenticated human
+  request. The separate, narrow Facebook comment-reply carve-out is governed by
+  ADR-0006 and does not include hide, unhide, leave, or delete.
 - Events that trigger email or background work use a transactional outbox.
 - Metrics never represent an absent denominator as zero.
 
 Internal manual dataset creation and trained-model work occur only after the
 functional prototype path is usable. They remain separate from the client UI and
-must not block the initial MVP. Automatic replies, Messenger automation, and
-additional providers are outside the initial backend scope.
+must not block the initial MVP. Messenger automation and additional providers
+are outside the initial backend scope; controlled Facebook comment replies are
+the ADR-0006 demo exception.
 
 ## Quality Gates
 
