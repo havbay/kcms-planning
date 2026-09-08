@@ -69,6 +69,15 @@ artifact. A rolling deploy will otherwise answer from the old instance.
 `META_GRAPH_VERSION` and `INTEGRATION_ENCRYPTION_KEY` must be set on Render or
 connecting a Page returns 503.
 
+## Hide verification after provider-result fix
+
+After deployment, hide one newly imported visitor comment and confirm the KCMS
+history says `provider_applied=true`. Verify visibility from a logged-out or
+second non-author/non-Page-admin Facebook viewer; the commenter, their friends,
+and Page managers may still see a hidden comment. If KCMS reports provider
+success but that independent viewer still sees it, inspect the exact comment id
+and Meta response before changing the action model.
+
 
 ## Authentication redesign — drafted, not approved
 

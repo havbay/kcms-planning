@@ -79,6 +79,11 @@ skips overlapping requests, and dispatches a refresh event for Moderate. The
 Moderate screen keeps its manual sync button but no longer creates a duplicate
 timer.
 
+Moderation action updates now use the backend's exact `provider_applied` result
+instead of assuming that any connected Page means the action reached Facebook.
+The UI therefore labels an action `on Facebook` only when the provider confirms
+it, and labels a sample or otherwise local action `KCMS only`.
+
 **Vercel note:** `main` is now the Production Branch. Push `c607084` created a
 Production deployment automatically; the public alias served the exact CSS and
 JavaScript fingerprints from the verified local build.

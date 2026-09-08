@@ -82,3 +82,8 @@ gate and idempotent event log run before a provider reply; the owner confirms
 the live feature, and provider failure is recorded without claiming success.
 The rule preview is non-posting. Messenger and server-side worker/webhook
 ingestion remain deferred.
+
+Moderation action history now includes `provider_applied` in the generated
+OpenAPI and frontend types. The frontend consumes that value immediately after
+HIDE/UNHIDE instead of inferring provider success from connection state. This
+change is local until both repositories are intentionally pushed and deployed.

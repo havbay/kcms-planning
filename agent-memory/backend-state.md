@@ -109,6 +109,14 @@ sees 502, because an Action records what actually happened to the comment.
 Seeded sample comments carry the sandbox Page id, so they never send a hide for
 an id Facebook does not know.
 
+## Provider action result contract (2026-09-09)
+
+Moderation action history now returns `provider_applied` alongside the action,
+so clients can distinguish a real Facebook-side hide/unhide from a KCMS-only
+sample action. The Graph adapter also rejects a successful HTTP response that
+explicitly contains `success: false`; otherwise that response could be recorded
+as a provider action without Facebook applying it.
+
 `get_meta_client` requires only `META_GRAPH_VERSION`. Facebook Login checks its
 own settings when used, so a Page token works without an OAuth app.
 
