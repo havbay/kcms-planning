@@ -219,6 +219,43 @@ had hung and would never generate a response". It happened once, on the first
 request after deployment. Watch for it; if it recurs outside cold start,
 investigate before the production cutover.
 
+BLOCKER before production cutover — Clerk identity provenance:
+
+Live production has always run on the Clerk **development** instance
+(`pk_test_...`), so the production database's Clerk identities carry
+development-instance user IDs. Counts in Neon `findmoy-production`:
+
+| provider | rows | sample `provider_id`                     |
+|----------|------|------------------------------------------|
+| email    | 19   | `chhuonnara002@gmail.com`                |
+| clerk    | 7    | `user_3Iua1z2z7M9IfR7zwglBZ9whQqK`       |
+
+That sample is the *same* Clerk user ID as the staging test user, which proves
+the provenance.
+
+The new production instance on `clerk.findmoy.app` issues different user IDs.
+At cutover those 7 people would match no `identity` row, each receive a fresh
+`app_user`, and lose access to their existing workspace, membership and comment
+history. The 19 workspaces and 109 comments stay in the database but become
+unreachable by their owners.
+
+Resolve before cutover. Preferred: remap. Create the 7 users in the production
+Clerk instance, build a verified email -> old ID -> new ID table, then
+`UPDATE identity SET provider_id = <new> WHERE provider = 'clerk' AND
+provider_id = <old>`. Only 7 rows. Keeps the pool isolation.
+
+Alternatives: revert production to the development instance, which restores the
+shared-pool problem ADR-0008 set out to fix; or accept re-registration, which
+silently orphans the 7 accounts and is not acceptable.
+
+The 19 `email` identities are legacy email/password accounts and are unaffected
+by the Clerk instance change.
+
+Platform administration is matched by email in `PLATFORM_ADMIN_EMAILS` and
+reconciled by `_sync_platform_admin` on every sign-in, so it survives the
+instance change and needs no remap. Set to
+`chhuonnara002@gmail.com,kcms@uberip.com` on staging.
+
 Next:
 
 1. Set the production Worker `CLERK_SECRET_KEY` to the Clerk **production**
