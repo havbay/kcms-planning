@@ -239,6 +239,9 @@ At cutover those 7 people would match no `identity` row, each receive a fresh
 history. The 19 workspaces and 109 comments stay in the database but become
 unreachable by their owners.
 
+The mapping table and procedure are prepared in
+`docs/2026-09-16-clerk-identity-remap.md`.
+
 Resolve before cutover. Preferred: remap. Create the 7 users in the production
 Clerk instance, build a verified email -> old ID -> new ID table, then
 `UPDATE identity SET provider_id = <new> WHERE provider = 'clerk' AND
