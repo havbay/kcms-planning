@@ -243,6 +243,23 @@ had hung and would never generate a response". It happened once, on the first
 request after deployment. Watch for it; if it recurs outside cold start,
 investigate before the production cutover.
 
+Secret exposure, 2026-09-16 — resolved in part, remainder accepted by owner:
+
+Two production secrets were briefly written as Cloudflare secret *names*, which
+are listed in plaintext, during a mistaken `wrangler secret put` invocation.
+
+- Meta app secret: rotated. Verified — Meta rejects the old value with
+  "Error validating client secret".
+- Clerk production secret key: **not rotated**. Verified still valid against
+  `GET https://api.clerk.com/v1/users` (HTTP 200) after the exposure. The owner
+  reviewed this and chose to accept the risk rather than rotate.
+
+What accepting it means: that key is a full Clerk backend credential for the
+production instance and can read, modify and delete production users. It exists
+in the assistant transcript of 2026-09-16 and in Cloudflare's secret listing
+history. If production user data is ever found altered unexpectedly, rotate
+this key first and treat it as the likely cause.
+
 BLOCKER before production cutover — Clerk identity provenance:
 
 Live production has always run on the Clerk **development** instance
