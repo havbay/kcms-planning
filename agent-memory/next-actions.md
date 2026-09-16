@@ -138,167 +138,50 @@ Safe comments stay out of the dashboard. That is settled, not a defect.
 
 ## Cloudflare-first hosting
 
-Completed: separate Neon production/staging databases, separate Hyperdrive
-bindings, production and staging Workers, verified production data restore,
-empty staging schema, staging API custom domain, and the staging Pages
-deployment. The staging frontend and backend pass HTTPS, health, database, API
-URL, and CORS checks. Render and Vercel remain available for rollback.
+PRODUCTION CUTOVER COMPLETED 2026-09-16.
 
-Verified 2026-09-16:
-- Neon `findmoy-production`: 21 tables, 23 migrations, 26 users, 19 workspaces,
-  109 comments, 4 page connections, 109 verdicts, 57 actions.
-- Neon `findmoy-staging`: 21 tables, 23 migrations, 0 rows in every data table.
-- Render MCP cannot open a Postgres connection (`SSL/TLS required`), so the
-  restore has not been re-compared against the Render source in this session.
-  Do not delete `kcms-postgres` until that comparison is done another way.
-- The Render database still carries the temporary firewall rule
-  `110.235.254.164/32 "Temporary KCMS migration"`. It was never removed. Remove
-  it.
-- Clerk production instance deployed on `clerk.findmoy.app` and verified.
-  `CLERK_JWT_ISSUER` on the production Worker is now
-  `https://clerk.findmoy.app`.
-- `main` is a strict ancestor of `staging` in both repositories, so the
-  production release is a fast-forward.
+Live on Cloudflare and verified:
 
-Blocking defect found and fixed on 2026-09-16 — Clerk sign-in on Workers:
+| host | result |
+|------|--------|
+| `findmoy.app` | 200, valid TLS, SPA routes 200 |
+| `www.findmoy.app` | 200, valid TLS |
+| `api.findmoy.app` | READY, database REACHABLE, CORS allows findmoy.app |
+| `staging.findmoy.app` / `api-staging.findmoy.app` | 200 / READY |
 
-`jwt.PyJWKClient` fetches the Clerk key set with blocking `urllib.request`.
-Cloudflare Python Workers cannot do synchronous socket I/O, so the fetch raised
-`PyJWKClientConnectionError`, a `PyJWTError` subclass that
-`_verify_clerk_token` swallowed and reported as a plain 401. Every
-authenticated request failed on **both** Workers, and the frontend retried the
-exchange two to three times a second indefinitely. The staging spinner
-"កំពុងទាញមតិយោបល់…" never resolved and sign-out could not complete.
+The served production bundle is `index-Dx6S5j_n.js`, fingerprint-identical to
+the locally built artifact, and carries `pk_live_Y2xlcmsuZmluZG1veS5hcHAk` and
+`https://api.findmoy.app`.
 
-The earlier verification passed only `/health`, CORS, DNS and SPA routes. None
-of those exercise a signed-in request, so the fault went unnoticed and the
-"production Worker is ready" conclusion was premature. Any future environment
-sign-off must include one real authenticated request.
+`main` was fast-forwarded to `staging` in both repositories. DNS: the apex
+`A 162.255.119.156` and `www CNAME parkingpage.namecheap.com` were replaced by
+CNAMEs to `findmoy-production.pages.dev`. Namecheap MX/SPF records were left
+untouched.
 
-Fixed in kcms-backend `4b9f778`: fetch the key set with the async httpx client
-already used in that module, cache it for ten minutes, refresh once on an
-unknown `kid`, and return 503 rather than 401 when the key set cannot be
-fetched so this can never again be mistaken for a bad token. Deployed to both
-Workers and verified: staging `POST /api/v1/auth/clerk` returns 200, and the
-staging database now holds 1 user, 1 identity, 1 workspace, 1 membership and
-0 sandbox workspaces.
+Two findings from the cutover:
 
-Second blocking defect, same day — pooled connections on Workers:
+1. The `findmoy-production` Pages project is **disconnected from Git**, so
+   pushing `main` triggers no build. The deployment was a direct upload via
+   `wrangler pages deploy`. Reconnect it, or keep deploying by direct upload —
+   but do not assume a push publishes production.
+2. Vercel overrides `VITE_CLERK_PUBLISHABLE_KEY` with a project environment
+   variable, so `kcms-frontend.vercel.app` rebuilt from `main` still serves
+   `pk_test` while calling `api.findmoy.app`, whose issuer is now
+   `clerk.findmoy.app`. Sign-in on the Vercel host therefore fails. Either set
+   that variable to the `pk_live` key or retire the Vercel project.
 
-The first fix exposed a deeper one. `Database` built an asyncpg pool during
-FastAPI startup, which on a Worker runs inside whichever request reached the
-isolate first. Workers forbid reusing an I/O object across requests, so every
-later request on that isolate blocked on a socket it did not own until the
-runtime cancelled it with "your Worker's code had hung and would never generate
-a response". A 110-event capture showed 28 of 31 `POST /auth/clerk` hung, plus
-hangs on `/comments`, `/comments/summary`, `/settings` and
-`/facebook/connections` — the occasional success was a fresh isolate.
+Still open after cutover:
 
-Fixed in kcms-backend `5b76753`: a per-request connection mode. Startup opens
-nothing; `acquire()` opens and closes one connection per use; the Worker
-refreshes the DSN each request. Hyperdrive pools on Cloudflare's side. Render
-keeps the pooled path, so the rollback target is unchanged. All 75 `acquire()`
-call sites were left untouched.
-
-Verified on staging with a full 52-event capture, 0 5xx and 0 hangs:
-sign-in 200, sign-out 204, comments 200, settings 200, team 200, keywords 200,
-auto-reply rules/events/settings 200, facebook connections 200, and
-`POST /facebook/oauth/start` 201.
-
-Third Workers defect, fixed 2026-09-16 — nested asyncio tasks:
-
-`asyncio.wait_for` wraps its awaitable in a nested task, which Pyodide rejects
-with `SystemError: Cannot enter a promising task from inside another running
-promising task`. It surfaced as intermittent 500s on `OPTIONS
-/api/v1/auth/clerk`: the CORS preflight failed, the browser refused to send the
-POST, and the frontend fell back into its retry loop — the same visible symptom
-as the two earlier defects but a different cause. Fixed by using asyncpg's own
-`connect(timeout=...)`. Fifteen consecutive preflights then returned 200, where
-seven of nine had failed before.
-
-CPU decision — 2026-09-16, owner's call: stay on Workers Free for now.
-
-`Worker exceeded CPU time limit` fired three times in one capture, with
-measured `cpuTime` p50 34 ms, p90 64 ms, max 402 ms against the free limit of
-10 ms per invocation. ADR-0008 names this as the stop condition for the
-cutover. The owner chose to continue on the free plan and gather more evidence
-rather than enable Workers Paid at $5/month.
-
-Consequence to respect: free-tier enforcement is bursty, so a clean session is
-not evidence the limit is satisfied. Do not treat any staging session as
-cutover approval while this is open, and re-present the paid option if the CPU
-errors recur under real use.
-
-Open risk — CPU: observed `cpuTime` p50 36 ms, p90 107 ms, max 420 ms, against
-the documented Workers Free limit of 10 ms per invocation. Nothing failed for
-CPU in these captures, but the margin is the opposite of comfortable. Measure
-again under real load before cutover, and treat Workers Paid ($5/month) as the
-likely outcome.
-
-Process note: a 6-event sample was read as success while the full capture
-showed 28 hangs. Judge a Worker deployment only from a complete capture.
-
-Still open: one `OPTIONS /api/v1/auth/clerk` returned 500 with "Worker's code
-had hung and would never generate a response". It happened once, on the first
-request after deployment. Watch for it; if it recurs outside cold start,
-investigate before the production cutover.
-
-Secret exposure, 2026-09-16 — resolved in part, remainder accepted by owner:
-
-Two production secrets were briefly written as Cloudflare secret *names*, which
-are listed in plaintext, during a mistaken `wrangler secret put` invocation.
-
-- Meta app secret: rotated. Verified — Meta rejects the old value with
-  "Error validating client secret".
-- Clerk production secret key: **not rotated**. Verified still valid against
-  `GET https://api.clerk.com/v1/users` (HTTP 200) after the exposure. The owner
-  reviewed this and chose to accept the risk rather than rotate.
-
-What accepting it means: that key is a full Clerk backend credential for the
-production instance and can read, modify and delete production users. It exists
-in the assistant transcript of 2026-09-16 and in Cloudflare's secret listing
-history. If production user data is ever found altered unexpectedly, rotate
-this key first and treat it as the likely cause.
-
-BLOCKER before production cutover — Clerk identity provenance:
-
-Live production has always run on the Clerk **development** instance
-(`pk_test_...`), so the production database's Clerk identities carry
-development-instance user IDs. Counts in Neon `findmoy-production`:
-
-| provider | rows | sample `provider_id`                     |
-|----------|------|------------------------------------------|
-| email    | 19   | `chhuonnara002@gmail.com`                |
-| clerk    | 7    | `user_3Iua1z2z7M9IfR7zwglBZ9whQqK`       |
-
-That sample is the *same* Clerk user ID as the staging test user, which proves
-the provenance.
-
-The new production instance on `clerk.findmoy.app` issues different user IDs.
-At cutover those 7 people would match no `identity` row, each receive a fresh
-`app_user`, and lose access to their existing workspace, membership and comment
-history. The 19 workspaces and 109 comments stay in the database but become
-unreachable by their owners.
-
-The mapping table and procedure are prepared in
-`docs/2026-09-16-clerk-identity-remap.md`.
-
-Resolve before cutover. Preferred: remap. Create the 7 users in the production
-Clerk instance, build a verified email -> old ID -> new ID table, then
-`UPDATE identity SET provider_id = <new> WHERE provider = 'clerk' AND
-provider_id = <old>`. Only 7 rows. Keeps the pool isolation.
-
-Alternatives: revert production to the development instance, which restores the
-shared-pool problem ADR-0008 set out to fix; or accept re-registration, which
-silently orphans the 7 accounts and is not acceptable.
-
-The 19 `email` identities are legacy email/password accounts and are unaffected
-by the Clerk instance change.
-
-Platform administration is matched by email in `PLATFORM_ADMIN_EMAILS` and
-reconciled by `_sync_platform_admin` on every sign-in, so it survives the
-instance change and needs no remap. Set to
-`chhuonnara002@gmail.com,kcms@uberip.com` on staging.
+- The two administrator demo accounts are **not** remapped. `kcms@uberip.com`
+  and `kcms01@uberip.com` must not sign in on production until
+  `docs/2026-09-16-clerk-identity-remap.md` is applied, or Clerk creates
+  duplicate `app_user` rows and the remap becomes a merge.
+- The other five owners re-register by decision; their old workspaces stay in
+  the database unreachable.
+- Render `kcms-postgres` restore was never re-compared against the source, and
+  the temporary firewall rule `110.235.254.164/32` is still open. Settle both
+  before deleting anything on Render.
+- CPU remains over the Workers Free limit; see the CPU decision above.
 
 Next:
 
