@@ -183,6 +183,37 @@ Workers and verified: staging `POST /api/v1/auth/clerk` returns 200, and the
 staging database now holds 1 user, 1 identity, 1 workspace, 1 membership and
 0 sandbox workspaces.
 
+Second blocking defect, same day — pooled connections on Workers:
+
+The first fix exposed a deeper one. `Database` built an asyncpg pool during
+FastAPI startup, which on a Worker runs inside whichever request reached the
+isolate first. Workers forbid reusing an I/O object across requests, so every
+later request on that isolate blocked on a socket it did not own until the
+runtime cancelled it with "your Worker's code had hung and would never generate
+a response". A 110-event capture showed 28 of 31 `POST /auth/clerk` hung, plus
+hangs on `/comments`, `/comments/summary`, `/settings` and
+`/facebook/connections` — the occasional success was a fresh isolate.
+
+Fixed in kcms-backend `5b76753`: a per-request connection mode. Startup opens
+nothing; `acquire()` opens and closes one connection per use; the Worker
+refreshes the DSN each request. Hyperdrive pools on Cloudflare's side. Render
+keeps the pooled path, so the rollback target is unchanged. All 75 `acquire()`
+call sites were left untouched.
+
+Verified on staging with a full 52-event capture, 0 5xx and 0 hangs:
+sign-in 200, sign-out 204, comments 200, settings 200, team 200, keywords 200,
+auto-reply rules/events/settings 200, facebook connections 200, and
+`POST /facebook/oauth/start` 201.
+
+Open risk — CPU: observed `cpuTime` p50 36 ms, p90 107 ms, max 420 ms, against
+the documented Workers Free limit of 10 ms per invocation. Nothing failed for
+CPU in these captures, but the margin is the opposite of comfortable. Measure
+again under real load before cutover, and treat Workers Paid ($5/month) as the
+likely outcome.
+
+Process note: a 6-event sample was read as success while the full capture
+showed 28 hangs. Judge a Worker deployment only from a complete capture.
+
 Still open: one `OPTIONS /api/v1/auth/clerk` returned 500 with "Worker's code
 had hung and would never generate a response". It happened once, on the first
 request after deployment. Watch for it; if it recurs outside cold start,
