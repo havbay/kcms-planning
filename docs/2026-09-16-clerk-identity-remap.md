@@ -1,6 +1,31 @@
 # Clerk identity remap for the production cutover
 
-**Status:** prepared, not applied. Blocks the `findmoy.app` cutover.
+**Status:** scope reduced by the owner on 2026-09-16. Applies to two accounts.
+
+## Scope decision
+
+The owner reviewed the seven accounts and chose to remap only the two
+administrator accounts. The remaining five sign in again after cutover and
+start from a new workspace; their existing workspaces stay in the database but
+are no longer reachable by them.
+
+Remap these two:
+
+| development user ID | email | workspace |
+|---------------------|-------|-----------|
+| `user_3Iv40sGNxxbNj8MHjmS9I0EBSPx` | kcms@uberip.com | KCMS user |
+| `user_3J68Wf0XdLrOIqVAzTJ5BUxMWJJ` | kcms01@uberip.com | kcms01 |
+
+Let these five re-register: chhuonnara002@gmail.com,
+sopheakchan200021@gmail.com, taot70210@gmail.com, layheangrin@gmail.com,
+yuneychhean@gmail.com. Four of them signed in during the week before this
+decision, so tell them their workspace will be empty rather than letting them
+discover it.
+
+`PLATFORM_ADMIN_EMAILS` must become
+`chhuonnara002@gmail.com,kcms@uberip.com,kcms01@uberip.com`. The value set
+earlier omits `kcms01@uberip.com`, and `_sync_platform_admin` revokes as well
+as grants, so kcms01 would lose administration at its next sign-in.
 
 ## Why this is needed
 
