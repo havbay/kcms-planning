@@ -205,6 +205,30 @@ sign-in 200, sign-out 204, comments 200, settings 200, team 200, keywords 200,
 auto-reply rules/events/settings 200, facebook connections 200, and
 `POST /facebook/oauth/start` 201.
 
+Third Workers defect, fixed 2026-09-16 — nested asyncio tasks:
+
+`asyncio.wait_for` wraps its awaitable in a nested task, which Pyodide rejects
+with `SystemError: Cannot enter a promising task from inside another running
+promising task`. It surfaced as intermittent 500s on `OPTIONS
+/api/v1/auth/clerk`: the CORS preflight failed, the browser refused to send the
+POST, and the frontend fell back into its retry loop — the same visible symptom
+as the two earlier defects but a different cause. Fixed by using asyncpg's own
+`connect(timeout=...)`. Fifteen consecutive preflights then returned 200, where
+seven of nine had failed before.
+
+CPU decision — 2026-09-16, owner's call: stay on Workers Free for now.
+
+`Worker exceeded CPU time limit` fired three times in one capture, with
+measured `cpuTime` p50 34 ms, p90 64 ms, max 402 ms against the free limit of
+10 ms per invocation. ADR-0008 names this as the stop condition for the
+cutover. The owner chose to continue on the free plan and gather more evidence
+rather than enable Workers Paid at $5/month.
+
+Consequence to respect: free-tier enforcement is bursty, so a clean session is
+not evidence the limit is satisfied. Do not treat any staging session as
+cutover approval while this is open, and re-present the paid option if the CPU
+errors recur under real use.
+
 Open risk — CPU: observed `cpuTime` p50 36 ms, p90 107 ms, max 420 ms, against
 the documented Workers Free limit of 10 ms per invocation. Nothing failed for
 CPU in these captures, but the margin is the opposite of comfortable. Measure
