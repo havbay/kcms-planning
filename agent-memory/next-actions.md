@@ -160,6 +160,34 @@ Verified 2026-09-16:
 - `main` is a strict ancestor of `staging` in both repositories, so the
   production release is a fast-forward.
 
+Blocking defect found and fixed on 2026-09-16 — Clerk sign-in on Workers:
+
+`jwt.PyJWKClient` fetches the Clerk key set with blocking `urllib.request`.
+Cloudflare Python Workers cannot do synchronous socket I/O, so the fetch raised
+`PyJWKClientConnectionError`, a `PyJWTError` subclass that
+`_verify_clerk_token` swallowed and reported as a plain 401. Every
+authenticated request failed on **both** Workers, and the frontend retried the
+exchange two to three times a second indefinitely. The staging spinner
+"កំពុងទាញមតិយោបល់…" never resolved and sign-out could not complete.
+
+The earlier verification passed only `/health`, CORS, DNS and SPA routes. None
+of those exercise a signed-in request, so the fault went unnoticed and the
+"production Worker is ready" conclusion was premature. Any future environment
+sign-off must include one real authenticated request.
+
+Fixed in kcms-backend `4b9f778`: fetch the key set with the async httpx client
+already used in that module, cache it for ten minutes, refresh once on an
+unknown `kid`, and return 503 rather than 401 when the key set cannot be
+fetched so this can never again be mistaken for a bad token. Deployed to both
+Workers and verified: staging `POST /api/v1/auth/clerk` returns 200, and the
+staging database now holds 1 user, 1 identity, 1 workspace, 1 membership and
+0 sandbox workspaces.
+
+Still open: one `OPTIONS /api/v1/auth/clerk` returned 500 with "Worker's code
+had hung and would never generate a response". It happened once, on the first
+request after deployment. Watch for it; if it recurs outside cold start,
+investigate before the production cutover.
+
 Next:
 
 1. Set the production Worker `CLERK_SECRET_KEY` to the Clerk **production**
