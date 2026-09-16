@@ -27,8 +27,10 @@ Ordered by dependency and value. No dates.
 
 9. Configure transactional SMTP when a verified sender domain is available;
    the audited manual setup-link fallback remains valid until then.
-10. Add Platform Administration for workspaces, users, integration health, and
-   audit logs without exposing ordinary customer comment content.
+10. Extend the local Platform Administration slice with user lifecycle,
+   integration audit logs, and safe operational audit views without exposing
+   ordinary customer comment content; then deploy the backend and frontend
+   together after review.
 11. Add workspace switching before one user manages multiple organizations.
 
 ## Model track
@@ -133,3 +135,50 @@ It will delete the same comment. Decide whether can_hide is stored at ingest
 before building the buttons.
 
 Safe comments stay out of the dashboard. That is settled, not a defect.
+
+## Cloudflare-first hosting
+
+Completed: separate Neon production/staging databases, separate Hyperdrive
+bindings, production and staging Workers, verified production data restore,
+empty staging schema, staging API custom domain, and the staging Pages
+deployment. The staging frontend and backend pass HTTPS, health, database, API
+URL, and CORS checks. Render and Vercel remain available for rollback.
+
+Verified 2026-09-16:
+- Neon `findmoy-production`: 21 tables, 23 migrations, 26 users, 19 workspaces,
+  109 comments, 4 page connections, 109 verdicts, 57 actions.
+- Neon `findmoy-staging`: 21 tables, 23 migrations, 0 rows in every data table.
+- Render MCP cannot open a Postgres connection (`SSL/TLS required`), so the
+  restore has not been re-compared against the Render source in this session.
+  Do not delete `kcms-postgres` until that comparison is done another way.
+- The Render database still carries the temporary firewall rule
+  `110.235.254.164/32 "Temporary KCMS migration"`. It was never removed. Remove
+  it.
+- Clerk production instance deployed on `clerk.findmoy.app` and verified.
+  `CLERK_JWT_ISSUER` on the production Worker is now
+  `https://clerk.findmoy.app`.
+- `main` is a strict ancestor of `staging` in both repositories, so the
+  production release is a fast-forward.
+
+Next:
+
+1. Set the production Worker `CLERK_SECRET_KEY` to the Clerk **production**
+   instance secret (`sk_live_...`). It currently holds the development
+   instance key, so production token verification will fail until this is done.
+2. Set staging Worker `META_APP_ID`, `META_APP_SECRET`, `META_LOGIN_CONFIG_ID`
+   from the production Meta app, per the owner override in ADR-0008.
+3. Add both callback URLs to the Meta app's valid OAuth redirect URIs:
+   `https://api-staging.findmoy.app/api/v1/facebook/oauth/callback` and
+   `https://api.findmoy.app/api/v1/facebook/oauth/callback`.
+4. Verify staging sign-in, authenticated API reads, invitation/setup links,
+   Meta OAuth, and Sentry environment.
+5. Production cutover, only after staging passes and with explicit approval:
+   fast-forward `main` to `staging` in both repositories, attach
+   `api.findmoy.app` to the production Worker, attach `findmoy.app` and
+   `www.findmoy.app` to the `findmoy-production` Pages project, then verify.
+6. Only after production verification: remove the Vercel project and the Render
+   service and database.
+
+Do not delete Vercel or Render before step 5 passes. `findmoy.app` is currently
+only a Namecheap parking redirect; the live product is still
+`kcms-frontend.vercel.app` on `kcms-backend.onrender.com`.
